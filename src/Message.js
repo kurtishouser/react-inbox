@@ -3,6 +3,19 @@ import Label from './Label.js';
 
 class Message extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+        starred: this.props.starred,
+    }
+  }
+
+  toggleStarred() {
+    let starred = !this.state.starred;
+    this.setState({starred});
+  }
+
   render() {
     return (
       <div className={'row message' + (this.props.read ? ' read' : ' unread') + (this.props.selected ? ' selected' : '')}>
@@ -11,8 +24,8 @@ class Message extends Component {
             <div className="col-xs-2">
               <input type="checkbox" defaultChecked={this.props.selected ? 'checked' : ''}/>
             </div>
-            <div className="col-xs-2">
-              <i className={'star fa ' + (this.props.starred ? 'fa-star' : 'fa-star-o')}></i>
+            <div className="col-xs-2" onClick={() => this.toggleStarred()}>
+              <i className={'star fa ' + (this.state.starred ? 'fa-star' : 'fa-star-o')}></i>
             </div>
           </div>
         </div>
