@@ -7,8 +7,14 @@ class Message extends Component {
     super(props);
 
     this.state = {
-        starred: this.props.starred,
+      selected: this.props.selected,
+      starred: this.props.starred,
     }
+  }
+
+  toggleSelected () {
+    let selected = !this.state.selected;
+    this.setState({selected});
   }
 
   toggleStarred() {
@@ -18,14 +24,14 @@ class Message extends Component {
 
   render() {
     return (
-      <div className={'row message' + (this.props.read ? ' read' : ' unread') + (this.props.selected ? ' selected' : '')}>
+      <div className={'row message' + (this.props.read ? ' read' : ' unread') + (this.state.selected ? ' selected' : '')}>
         <div className="col-xs-1">
           <div className="row">
             <div className="col-xs-2">
-              <input type="checkbox" defaultChecked={this.props.selected ? 'checked' : ''}/>
+              <input type="checkbox" defaultChecked={this.state.selected ? 'checked' : ''} onChange={() => this.toggleSelected()}/>
             </div>
-            <div className="col-xs-2" onClick={() => this.toggleStarred()}>
-              <i className={'star fa ' + (this.state.starred ? 'fa-star' : 'fa-star-o')}></i>
+            <div className="col-xs-2">
+              <i className={'star fa ' + (this.state.starred ? 'fa-star' : 'fa-star-o')} onClick={() => this.toggleStarred()}></i>
             </div>
           </div>
         </div>
