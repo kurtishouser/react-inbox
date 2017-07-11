@@ -7,8 +7,10 @@ class Message extends Component {
     super(props);
 
     this.state = {
+      read: this.props.read,
       selected: this.props.selected,
       starred: this.props.starred,
+      labels: this.props.labels,
     }
   }
 
@@ -23,20 +25,26 @@ class Message extends Component {
   }
 
   render() {
+
+    const read = this.state.read ? 'read' : 'unread';
+    const selected = this.state.selected ? 'selected' : '';
+    const checked = this.state.selected ? 'checked' : '';
+    const starred = this.state.starred ? 'fa-star' : 'fa-star-o';
+
     return (
-      <div className={'row message' + (this.props.read ? ' read' : ' unread') + (this.state.selected ? ' selected' : '')}>
+      <div className={`row message ${read} ${selected}`}>
         <div className="col-xs-1">
           <div className="row">
             <div className="col-xs-2">
-              <input type="checkbox" defaultChecked={this.state.selected ? 'checked' : ''} onChange={() => this.toggleSelected()}/>
+              <input type="checkbox" defaultChecked={checked} onChange={() => this.toggleSelected()}/>
             </div>
             <div className="col-xs-2">
-              <i className={'star fa ' + (this.state.starred ? 'fa-star' : 'fa-star-o')} onClick={() => this.toggleStarred()}></i>
+              <i className={`star fa ${starred}`} onClick={() => this.toggleStarred()}></i>
             </div>
           </div>
         </div>
         <div className="col-xs-11">
-          {this.props.labels.map((label) => {
+          {this.state.labels.map((label) => {
             return <Label key={label} label={label} />
           })}
           <a href="/">
