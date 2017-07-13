@@ -6,45 +6,42 @@ class Message extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      read: this.props.read,
-      selected: this.props.selected,
-      starred: this.props.starred,
-      labels: this.props.labels,
-    }
+    this.toggleSelected = this.toggleSelected.bind(this);
+    this.toggleStarred = this.toggleStarred.bind(this);
   }
 
   toggleSelected () {
-    let selected = !this.state.selected;
-    this.setState({selected});
+    let messageId = this.props.id;
+    let status = !this.props.selected;
+    this.props.updateSelectedStatus(messageId, status);
   }
 
   toggleStarred() {
-    let starred = !this.state.starred;
-    this.setState({starred});
+    let messageId = this.props.id;
+    let status = !this.props.starred;
+    this.props.updateStarredStatus(messageId, status);
   }
 
   render() {
-
-    const read = this.state.read ? 'read' : 'unread';
-    const selected = this.state.selected ? 'selected' : '';
-    const checked = this.state.selected ? 'checked' : '';
-    const starred = this.state.starred ? 'fa-star' : 'fa-star-o';
+    const read = this.props.read ? 'read' : 'unread';
+    const selected = this.props.selected ? 'selected' : '';
+    const checked = this.props.selected ? 'checked' : '';
+    const starred = this.props.starred ? 'fa-star' : 'fa-star-o';
 
     return (
       <div className={`row message ${read} ${selected}`}>
         <div className="col-xs-1">
           <div className="row">
             <div className="col-xs-2">
-              <input type="checkbox" defaultChecked={checked} onChange={() => this.toggleSelected()}/>
+              <input type="checkbox" defaultChecked={checked} onChange={this.toggleSelected}/>
             </div>
             <div className="col-xs-2">
-              <i className={`star fa ${starred}`} onClick={() => this.toggleStarred()}></i>
+              <i className={`star fa ${starred}`} onClick={this.toggleStarred}></i>
             </div>
           </div>
         </div>
         <div className="col-xs-11">
-          {this.state.labels.map((label) => {
+          {this.props.labels.map((label) => {
             return <Label key={label} label={label} />
           })}
           <a href="/">

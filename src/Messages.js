@@ -7,7 +7,17 @@ class Messages extends Component {
     return (
       <div>
         {this.props.messages.map((message) => {
-          return <Message key={message.id} read={message.read} starred={message.starred} selected={message.selected} labels={message.labels} subject={message.subject} />
+          return <Message
+                    key={message.id}
+                    id={message.id}
+                    read={message.read}
+                    starred={message.starred}
+                    selected={message.selected}
+                    labels={message.labels}
+                    subject={message.subject}
+                    updateSelectedStatus={this.props.updateSelectedStatus}
+                    updateStarredStatus={this.props.updateStarredStatus}
+                    deleteMessages={this.props.deleteMessages}/>
         })}
       </div>
     )
