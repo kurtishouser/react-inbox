@@ -14,12 +14,16 @@ class Message extends Component {
     let messageId = this.props.id;
     let status = !this.props.selected;
     this.props.updateSelectedStatus(messageId, status);
+    // let message = this.props;
+    // this.props.toggleProperty(message, 'selected');
   }
 
   toggleStarred() {
     let messageId = this.props.id;
     let status = !this.props.starred;
     this.props.updateStarredStatus(messageId, status);
+    // let message = this.props;
+    // this.props.toggleProperty(message, 'starred');
   }
 
   render() {

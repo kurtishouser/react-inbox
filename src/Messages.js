@@ -17,7 +17,8 @@ class Messages extends Component {
                     subject={message.subject}
                     updateSelectedStatus={this.props.updateSelectedStatus}
                     updateStarredStatus={this.props.updateStarredStatus}
-                    deleteMessages={this.props.deleteMessages}/>
+                    deleteMessages={this.props.deleteMessages}
+                    toggleProperty={this.props.toggleProperty}/>
         })}
       </div>
     )

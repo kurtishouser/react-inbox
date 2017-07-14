@@ -2,67 +2,14 @@ import React, { Component } from 'react';
 import Toolbar from './Toolbar.js';
 import Messages from './Messages.js';
 
+const BASE_PATH = "http://localhost:8181/api/messages"
+
 class App extends Component {
 
   constructor() {
     super();
 
-    this.state = {
-      messages: [
-        {
-          "id": 1,
-          "subject": "You can't input the protocol without calculating the mobile RSS protocol!",
-          "read": false,
-          "starred": true,
-          "labels": ["dev", "personal"]
-        }, {
-          "id": 2,
-          "subject": "connecting the system won't do anything, we need to input the mobile AI panel!",
-          "read": false,
-          "starred": false,
-          "selected": true,
-          "labels": []
-        }, {
-          "id": 3,
-          "subject": "Use the 1080p HTTP feed, then you can parse the cross-platform hard drive!",
-          "read": false,
-          "starred": true,
-          "labels": ["dev"]
-        }, {
-          "id": 4,
-          "subject": "We need to program the primary TCP hard drive!",
-          "read": true,
-          "starred": false,
-          "selected": true,
-          "labels": []
-        }, {
-          "id": 5,
-          "subject": "If we override the interface, we can get to the HTTP feed through the virtual EXE interface!",
-          "read": false,
-          "starred": false,
-          "labels": ["personal"]
-        }, {
-          "id": 6,
-          "subject": "We need to back up the wireless GB driver!",
-          "read": true,
-          "starred": true,
-          "labels": []
-        }, {
-          "id": 7,
-          "subject": "We need to index the mobile PCI bus!",
-          "read": true,
-          "starred": false,
-          "labels": ["dev", "personal"]
-        }, {
-          "id": 8,
-          "subject": "If we connect the sensor, we can get to the HDD port through the redundant IB firewall!",
-          "read": true,
-          "starred": true,
-          "labels": []
-        }
-      ]
-      // messages: []
-    }
+    this.state = {messages: []}
 
     this.updateSelectedStatus = this.updateSelectedStatus.bind(this);
     this.updateSelectedAllStatus = this.updateSelectedAllStatus.bind(this);
@@ -71,6 +18,19 @@ class App extends Component {
     this.deleteMessages = this.deleteMessages.bind(this);
     this.addLabels = this.addLabels.bind(this);
     this.removeLabels = this.removeLabels.bind(this);
+
+    this.fetchMessages = this.fetchMessages.bind(this);
+
+    this.toggleProperty = this.toggleProperty.bind(this);
+  }
+
+  fetchMessages() {
+    fetch(BASE_PATH)
+      .then(response => response.json())
+      .then(result => {
+        let messages = result._embedded.messages;
+        this.setState({messages});
+      });
   }
 
   getSelectedMessages() {
@@ -79,7 +39,7 @@ class App extends Component {
 
   updateSelectedAllStatus(status) {
     let messages = this.state.messages.map(msg => msg.selected = status);
-    
+
     this.setState(messages);
   }
 
@@ -94,7 +54,7 @@ class App extends Component {
     let message = this.state.messages.find(m => m.id === messageId);
     message.starred = status;
 
-    this.setState(this.state.messages);
+    this.setState({message});
   }
 
   updateReadStatus(status) {
@@ -149,6 +109,7 @@ class App extends Component {
 
   // example code;
   toggleProperty(message, property) {
+    console.log(message);
     this.setState((prevState) => {
       const index = prevState.messages.indexOf(message)
       return {
@@ -161,10 +122,15 @@ class App extends Component {
     })
   }
 
+  componentDidMount() {
+    this.fetchMessages();
+  }
+
   render() {
       return (
          <div className="container">
-          <Toolbar messages={this.state.messages}
+          <Toolbar
+            messages={this.state.messages}
             updateSelectedAllStatus={this.updateSelectedAllStatus}
             updateReadStatus={this.updateReadStatus}
             deleteMessages={this.deleteMessages}
@@ -175,6 +141,7 @@ class App extends Component {
             messages={this.state.messages}
             updateSelectedStatus={this.updateSelectedStatus}
             updateStarredStatus={this.updateStarredStatus}
+            toggleProperty={this.toggleProperty}
           />
          </div>
       );
@@ -182,3 +149,58 @@ class App extends Component {
 }
 
 export default App;
+
+// original seed data - delete later
+// messages: [
+//   {
+//     "id": 1,
+//     "subject": "You can't input the protocol without calculating the mobile RSS protocol!",
+//     "read": false,
+//     "starred": true,
+//     "labels": ["dev", "personal"]
+//   }, {
+//     "id": 2,
+//     "subject": "connecting the system won't do anything, we need to input the mobile AI panel!",
+//     "read": false,
+//     "starred": false,
+//     "selected": false,
+//     "labels": []
+//   }, {
+//     "id": 3,
+//     "subject": "Use the 1080p HTTP feed, then you can parse the cross-platform hard drive!",
+//     "read": false,
+//     "starred": true,
+//     "labels": ["dev"]
+//   }, {
+//     "id": 4,
+//     "subject": "We need to program the primary TCP hard drive!",
+//     "read": true,
+//     "starred": false,
+//     "selected": false,
+//     "labels": []
+//   }, {
+//     "id": 5,
+//     "subject": "If we override the interface, we can get to the HTTP feed through the virtual EXE interface!",
+//     "read": false,
+//     "starred": false,
+//     "labels": ["personal"]
+//   }, {
+//     "id": 6,
+//     "subject": "We need to back up the wireless GB driver!",
+//     "read": true,
+//     "starred": true,
+//     "labels": []
+//   }, {
+//     "id": 7,
+//     "subject": "We need to index the mobile PCI bus!",
+//     "read": true,
+//     "starred": false,
+//     "labels": ["dev", "personal"]
+//   }, {
+//     "id": 8,
+//     "subject": "If we connect the sensor, we can get to the HDD port through the redundant IB firewall!",
+//     "read": true,
+//     "starred": true,
+//     "labels": []
+//   }
+// ]
