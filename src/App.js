@@ -65,57 +65,116 @@ class App extends Component {
     }
 
     this.updateSelectedStatus = this.updateSelectedStatus.bind(this);
+    this.updateSelectedAllStatus = this.updateSelectedAllStatus.bind(this);
     this.updateStarredStatus = this.updateStarredStatus.bind(this);
     this.updateReadStatus = this.updateReadStatus.bind(this);
     this.deleteMessages = this.deleteMessages.bind(this);
+    this.addLabels = this.addLabels.bind(this);
+    this.removeLabels = this.removeLabels.bind(this);
   }
 
-  updateSelectedStatus(id, status) {
-    let message = this.state.messages.find(m => m.id === id);
+  getSelectedMessages() {
+    return this.state.messages.filter(msg => msg.selected);
+  }
+
+  updateSelectedAllStatus(status) {
+    let messages = this.state.messages.map(msg => msg.selected = status);
+    
+    this.setState(messages);
+  }
+
+  updateSelectedStatus(messageId, status) {
+    let message = this.state.messages.find(m => m.id === messageId);
     message.selected = status;
-    this.setState(this.state.messages);
+
+    this.setState({message});
   }
 
-  updateStarredStatus(id, status) {
-    let message = this.state.messages.find(m => m.id === id);
+  updateStarredStatus(messageId, status) {
+    let message = this.state.messages.find(m => m.id === messageId);
     message.starred = status;
+
     this.setState(this.state.messages);
   }
 
-  updateReadStatus(messageIds, status) {
-    for (let i = 0; i < this.state.messages.length; i++) {
-      for (let j = 0; j < messageIds.length; j++) {
-        if (this.state.messages[i].id === messageIds[j]) {
-          let message = this.state.messages[i];
-          message.read = status;
-        }
-      }
-    }
-    this.setState(this.state.messages);
+  updateReadStatus(status) {
+    let messages = this.getSelectedMessages()
+                       .map((msg) => msg.read = status);
+
+    this.setState(messages);
   }
 
-  deleteMessages(messageIds) {
-    for (let i = 0; i < this.state.messages.length; i++) {
-      for (let j = 0; j < messageIds.length; j++) {
-        if (this.state.messages[i].id === messageIds[j]) {
-          this.state.messages.splice(i, 1);
+  addLabels(label) {
+
+      let messages = this.getSelectedMessages();
+
+      for (let i = 0; i < messages.length; i++) {
+        if (!messages[i].labels.includes(label)) {
+          messages[i].labels.push(label);
+        }
+      }
+
+      this.setState(messages);
+  }
+
+  removeLabels(label) {
+
+    let messages = this.getSelectedMessages();
+
+    for (let i = 0; i < messages.length; i++) {
+      for (let j = 0; j < messages[i].labels.length; j++) {
+        if (messages[i].labels[j] === label) {
+          messages[i].labels.splice(j, 1);
         }
       }
     }
-    this.setState(this.state.messages);
+
+    this.setState(messages);
+  }
+
+  deleteMessages() {
+    let messages = this.state.messages.slice();
+    let selectedMessages = this.getSelectedMessages();
+
+    for (let i = 0; i < messages.length; i++) {
+      for (let j = 0; j < selectedMessages.length; j++) {
+        if (messages[i].id === selectedMessages[j].id) {
+          messages.splice(i, 1);
+        }
+      }
+    }
+
+    this.setState({messages});
+  }
+
+  // example code;
+  toggleProperty(message, property) {
+    this.setState((prevState) => {
+      const index = prevState.messages.indexOf(message)
+      return {
+        messages: [
+          ...prevState.messages.slice(0, index),
+          { ...message, [property]: !message[property] },
+          ...prevState.messages.slice(index + 1),
+        ]
+      };
+    })
   }
 
   render() {
       return (
          <div className="container">
           <Toolbar messages={this.state.messages}
+            updateSelectedAllStatus={this.updateSelectedAllStatus}
             updateReadStatus={this.updateReadStatus}
             deleteMessages={this.deleteMessages}
+            addLabels={this.addLabels}
+            removeLabels={this.removeLabels}
           />
           <Messages
             messages={this.state.messages}
-            updateStarredStatus={this.updateStarredStatus}
             updateSelectedStatus={this.updateSelectedStatus}
+            updateStarredStatus={this.updateStarredStatus}
           />
          </div>
       );

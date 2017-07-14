@@ -5,9 +5,12 @@ class Toolbar extends Component {
   constructor(props) {
     super(props);
 
-    this.deleteSelected = this.deleteSelected.bind(this);
+    this.toggleSelected = this.toggleSelected.bind(this);
     this.markAsRead = this.markAsRead.bind(this);
     this.markAsUnread = this.markAsUnread.bind(this);
+    this.deleteSelected = this.deleteSelected.bind(this);
+    this.addLabel = this.addLabel.bind(this);
+    this.removeLabel = this.removeLabel.bind(this);
   }
 
   messageCount() {
@@ -16,10 +19,6 @@ class Toolbar extends Component {
 
   selectedMessageCount() {
     return this.props.messages.filter(msg => msg.selected).length;
-  }
-
-  starredMessageCount() {
-    return this.props.messages.filter(msg => msg.starred).length;
   }
 
   readMessageCount() {
@@ -36,21 +35,31 @@ class Toolbar extends Component {
     }
   }
 
-  getSelectedMessageIds() {
-    return this.props.messages.filter(msg => msg.selected)
-                              .map(item => item.id);
+  toggleSelected () {
+    let status = (this.messageCount() - this.selectedMessageCount() > 0) ? true : false;
+    this.props.updateSelectedAllStatus(status);
   }
 
   markAsRead() {
-    this.props.updateReadStatus(this.getSelectedMessageIds(), true);
+    this.props.updateReadStatus(true);
   }
 
   markAsUnread() {
-    this.props.updateReadStatus(this.getSelectedMessageIds(), false);
+    this.props.updateReadStatus(false);
+  }
+
+  addLabel(e) {
+    let label = e.target.value;
+    if (label !== '') this.props.addLabels(label);
+  }
+
+  removeLabel(e) {
+    let label = e.target.value;
+    if (label !== '') this.props.removeLabels(label);
   }
 
   deleteSelected() {
-    this.props.deleteMessages(this.getSelectedMessageIds());
+    this.props.deleteMessages();
   }
 
   render() {
@@ -67,7 +76,7 @@ class Toolbar extends Component {
             unread message{unreadMessages !== 1 ? 's' : ''}
           </p>
 
-          <button className={`btn btn-default ${disableSelectAll}`}>
+          <button className={`btn btn-default ${disableSelectAll}`} onClick={this.toggleSelected}>
             <i className={`fa ${selectAllButtonIcon}`} />
           </button>
 
@@ -75,15 +84,15 @@ class Toolbar extends Component {
 
           <button className={`btn btn-default ${disabled}`} onClick={this.markAsUnread}>Mark As Unread</button>
 
-          <select className='form-control label-select' disabled={`${disabled}`}>
-            <option>Apply label</option>
+          <select className='form-control label-select' disabled={`${disabled}`} onChange={this.addLabel}>
+            <option value="">Add label</option>
             <option value="dev">dev</option>
             <option value="personal">personal</option>
             <option value="gschool">gschool</option>
           </select>
 
-          <select className='form-control label-select'  disabled={`${disabled}`}>
-            <option>Remove label</option>
+          <select className='form-control label-select' disabled={`${disabled}`} onChange={this.removeLabel}>
+            <option value="">Remove label</option>
             <option value="dev">dev</option>
             <option value="personal">personal</option>
             <option value="gschool">gschool</option>
