@@ -68,10 +68,8 @@ class App extends Component {
 
           let messages = this.state.messages.map(msg => {
             if (msg.selected) {
-              console.log('this is new item');
               return {...msg, read: status};
             } else {
-              console.log('prev item');
               return msg;
             }
           });

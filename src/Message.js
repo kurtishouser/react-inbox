@@ -27,6 +27,8 @@ class Message extends Component {
     const checked = this.props.message.selected ? true : false;
     const starred = this.props.message.starred ? 'fa-star' : 'fa-star-o';
 
+    console.log('Message.render()', this.props.message.id);
+
     return (
       <div className={`row message ${read} ${selected}`}>
         <div className="col-xs-1">

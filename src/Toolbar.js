@@ -6,8 +6,7 @@ class Toolbar extends Component {
     super(props);
 
     this.toggleSelected = this.toggleSelected.bind(this);
-    this.markAsRead = this.markAsRead.bind(this);
-    this.markAsUnread = this.markAsUnread.bind(this);
+    this.toggleRead = this.toggleRead.bind(this);
     this.deleteSelected = this.deleteSelected.bind(this);
     this.addLabel = this.addLabel.bind(this);
     this.removeLabel = this.removeLabel.bind(this);
@@ -40,12 +39,8 @@ class Toolbar extends Component {
     this.props.updateSelectedAllStatus(status);
   }
 
-  markAsRead() {
-    this.props.updateReadStatus(true);
-  }
-
-  markAsUnread() {
-    this.props.updateReadStatus(false);
+  toggleRead(e) {
+    this.props.updateReadStatus(parseInt(e.target.value, 10));
   }
 
   addLabel(e) {
@@ -68,6 +63,8 @@ class Toolbar extends Component {
     const unreadMessages = this.messageCount() - this.readMessageCount();
     const selectAllButtonIcon = this.selectAllButtonStatus();
 
+    console.log('Toolbar().render');
+
     return (
       <div className="row toolbar">
         <div className="col-md-12">
@@ -80,9 +77,9 @@ class Toolbar extends Component {
             <i className={`fa ${selectAllButtonIcon}`} />
           </button>
 
-          <button className={`btn btn-default ${disabled}`} onClick={this.markAsRead}>Mark As Read</button>
+          <button className={`btn btn-default ${disabled}`} value="1" onClick={this.toggleRead}>Mark As Read</button>
 
-          <button className={`btn btn-default ${disabled}`} onClick={this.markAsUnread}>Mark As Unread</button>
+          <button className={`btn btn-default ${disabled}`} value="0" onClick={this.toggleRead}>Mark As Unread</button>
 
           <select className='form-control label-select' disabled={`${disabled}`} onChange={this.addLabel}>
             <option value="">Add label</option>
