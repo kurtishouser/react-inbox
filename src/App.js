@@ -129,18 +129,29 @@ class App extends Component {
   }
 
   deleteMessages() {
-    let messages = this.state.messages.slice();
     let selectedMessages = this.getSelectedMessages();
+    let selectedMessageIds = selectedMessages.map(msg => msg.id);
 
-    for (let i = 0; i < messages.length; i++) {
-      for (let j = 0; j < selectedMessages.length; j++) {
-        if (messages[i].id === selectedMessages[j].id) {
-          messages.splice(i, 1);
-        }
-      }
+    let options = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        'messageIds': selectedMessageIds,
+        'command': 'delete',
+      }),
     }
 
-    this.setState({messages});
+    fetch(BASE_PATH, options)
+      .then((response) => {
+        if (response.status === 200) {
+
+          let messages = this.state.messages.filter((msg) => !msg.selected);
+
+          this.setState({messages});
+        }
+      });
   }
 
   toggleProperty(message, property) {
