@@ -11,24 +11,27 @@ class App extends Component {
 
     this.state = {messages: []}
 
-    this.updateSelectedStatus = this.updateSelectedStatus.bind(this);
     this.updateSelectedAllStatus = this.updateSelectedAllStatus.bind(this);
     this.updateStarredStatus = this.updateStarredStatus.bind(this);
     this.updateReadStatus = this.updateReadStatus.bind(this);
     this.deleteMessages = this.deleteMessages.bind(this);
     this.addLabels = this.addLabels.bind(this);
     this.removeLabels = this.removeLabels.bind(this);
+    this.toggleProperty = this.toggleProperty.bind(this);
 
     this.fetchMessages = this.fetchMessages.bind(this);
 
-    this.toggleProperty = this.toggleProperty.bind(this);
   }
 
   fetchMessages() {
     fetch(BASE_PATH)
-      .then(response => response.json())
+      .then(response => {
+        console.log(response.status, 'Mesages loaded from server');
+        return response.json();
+      })
       .then(result => {
         let messages = result._embedded.messages;
+        // console.log(messages);
         this.setState({messages});
       });
   }
@@ -43,25 +46,60 @@ class App extends Component {
     this.setState(messages);
   }
 
-  updateSelectedStatus(messageId, status) {
-    let message = this.state.messages.find(m => m.id === messageId);
-    message.selected = status;
-
-    this.setState({message});
-  }
-
-  updateStarredStatus(messageId, status) {
-    let message = this.state.messages.find(m => m.id === messageId);
-    message.starred = status;
-
-    this.setState({message});
-  }
-
   updateReadStatus(status) {
-    let messages = this.getSelectedMessages()
-                       .map((msg) => msg.read = status);
+    let selectedMessages = this.getSelectedMessages();
+    let selectedMessageIds = selectedMessages.map(msg => msg.id);
 
-    this.setState(messages);
+    let options = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        "messageIds": selectedMessageIds,
+        "command": "read",
+        "read": status,
+      }),
+    }
+
+    fetch(BASE_PATH, options)
+      .then((response) => {
+        if (response.status === 200) {
+
+          let messages = this.state.messages.map(msg => {
+            if (msg.selected) {
+              console.log('this is new item');
+              return {...msg, read: status};
+            } else {
+              console.log('prev item');
+              return msg;
+            }
+          });
+
+          this.setState({messages});
+        }
+      });
+  }
+
+  updateStarredStatus(message, command) {
+    let options = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        "messageIds": [message.id],
+        "command": command,
+        [command]: !message.starred,
+      }),
+    }
+
+    fetch(BASE_PATH, options)
+      .then((response) => {
+        if (response.status === 200) {
+          this.toggleProperty(message, 'starred');
+        }
+      });
   }
 
   addLabels(label) {
@@ -107,11 +145,12 @@ class App extends Component {
     this.setState({messages});
   }
 
-  // example code;
   toggleProperty(message, property) {
-    console.log(message);
+
     this.setState((prevState) => {
-      const index = prevState.messages.indexOf(message)
+
+      const index = prevState.messages.indexOf(message);
+
       return {
         messages: [
           ...prevState.messages.slice(0, index),
@@ -139,7 +178,6 @@ class App extends Component {
           />
           <Messages
             messages={this.state.messages}
-            updateSelectedStatus={this.updateSelectedStatus}
             updateStarredStatus={this.updateStarredStatus}
             toggleProperty={this.toggleProperty}
           />
@@ -149,58 +187,3 @@ class App extends Component {
 }
 
 export default App;
-
-// original seed data - delete later
-// messages: [
-//   {
-//     "id": 1,
-//     "subject": "You can't input the protocol without calculating the mobile RSS protocol!",
-//     "read": false,
-//     "starred": true,
-//     "labels": ["dev", "personal"]
-//   }, {
-//     "id": 2,
-//     "subject": "connecting the system won't do anything, we need to input the mobile AI panel!",
-//     "read": false,
-//     "starred": false,
-//     "selected": false,
-//     "labels": []
-//   }, {
-//     "id": 3,
-//     "subject": "Use the 1080p HTTP feed, then you can parse the cross-platform hard drive!",
-//     "read": false,
-//     "starred": true,
-//     "labels": ["dev"]
-//   }, {
-//     "id": 4,
-//     "subject": "We need to program the primary TCP hard drive!",
-//     "read": true,
-//     "starred": false,
-//     "selected": false,
-//     "labels": []
-//   }, {
-//     "id": 5,
-//     "subject": "If we override the interface, we can get to the HTTP feed through the virtual EXE interface!",
-//     "read": false,
-//     "starred": false,
-//     "labels": ["personal"]
-//   }, {
-//     "id": 6,
-//     "subject": "We need to back up the wireless GB driver!",
-//     "read": true,
-//     "starred": true,
-//     "labels": []
-//   }, {
-//     "id": 7,
-//     "subject": "We need to index the mobile PCI bus!",
-//     "read": true,
-//     "starred": false,
-//     "labels": ["dev", "personal"]
-//   }, {
-//     "id": 8,
-//     "subject": "If we connect the sensor, we can get to the HDD port through the redundant IB firewall!",
-//     "read": true,
-//     "starred": true,
-//     "labels": []
-//   }
-// ]

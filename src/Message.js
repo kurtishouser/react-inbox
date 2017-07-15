@@ -10,27 +10,22 @@ class Message extends Component {
     this.toggleStarred = this.toggleStarred.bind(this);
   }
 
-  toggleSelected () {
-    let messageId = this.props.id;
-    let status = !this.props.selected;
-    this.props.updateSelectedStatus(messageId, status);
-    // let message = this.props;
-    // this.props.toggleProperty(message, 'selected');
+  toggleSelected() {
+    let message = this.props.message;
+
+    this.props.toggleProperty(message, 'selected');
   }
 
   toggleStarred() {
-    let messageId = this.props.id;
-    let status = !this.props.starred;
-    this.props.updateStarredStatus(messageId, status);
-    // let message = this.props;
-    // this.props.toggleProperty(message, 'starred');
+    let message = this.props.message;
+    this.props.updateStarredStatus(message, 'star');
   }
 
   render() {
-    const read = this.props.read ? 'read' : 'unread';
-    const selected = this.props.selected ? 'selected' : '';
-    const checked = this.props.selected ? true : false;
-    const starred = this.props.starred ? 'fa-star' : 'fa-star-o';
+    const read = this.props.message.read ? 'read' : 'unread';
+    const selected = this.props.message.selected ? 'selected' : '';
+    const checked = this.props.message.selected ? true : false;
+    const starred = this.props.message.starred ? 'fa-star' : 'fa-star-o';
 
     return (
       <div className={`row message ${read} ${selected}`}>
@@ -45,11 +40,11 @@ class Message extends Component {
           </div>
         </div>
         <div className="col-xs-11">
-          {this.props.labels.map((label) => {
+          {this.props.message.labels.map((label) => {
             return <Label key={label} label={label} />
           })}
           <a href="/">
-            {this.props.subject}
+            {this.props.message.subject}
           </a>
         </div>
       </div>
