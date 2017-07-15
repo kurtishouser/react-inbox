@@ -47,8 +47,7 @@ class App extends Component {
   }
 
   updateReadStatus(status) {
-    let selectedMessages = this.getSelectedMessages();
-    let selectedMessageIds = selectedMessages.map(msg => msg.id);
+    let selectedMessageIds = this.getSelectedMessages().map(msg => msg.id);
 
     let options = {
       headers: {
@@ -129,8 +128,7 @@ class App extends Component {
   }
 
   deleteMessages() {
-    let selectedMessages = this.getSelectedMessages();
-    let selectedMessageIds = selectedMessages.map(msg => msg.id);
+    let selectedMessageIds = this.getSelectedMessages().map(msg => msg.id);
 
     let options = {
       headers: {
