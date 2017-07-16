@@ -101,30 +101,82 @@ class App extends Component {
 
   addLabels(label) {
 
-      let messages = this.getSelectedMessages();
+    let messageIds = this.getSelectedMessages()
+                         .filter((msg) => !msg.labels.includes(label))
+                         .map((msg) => msg.id);
 
-      for (let i = 0; i < messages.length; i++) {
-        if (!messages[i].labels.includes(label)) {
-          messages[i].labels.push(label);
-        }
-      }
+    if (messageIds.length !== 0) {
+      let options = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          'messageIds': messageIds,
+          'command': 'addLabel',
+          'label': label,
+        }),
+      };
 
-      this.setState(messages);
+      fetch(BASE_PATH, options)
+        .then((response) => {
+          if (response.status === 200) {
+
+            let messages = this.state.messages.map((msg) => {
+              if (messageIds.includes(msg.id)) {
+                  let labels = msg.labels.slice();
+                  labels.push(label);
+                  return {...msg, labels: labels}
+              } else {
+                return msg;
+              }
+            });
+
+            this.setState({messages});
+          }
+        });
+    }
+
+
   }
 
   removeLabels(label) {
 
-    let messages = this.getSelectedMessages();
+    let messageIds = this.getSelectedMessages()
+                         .filter((msg) => msg.labels.includes(label))
+                         .map((msg) => msg.id);
 
-    for (let i = 0; i < messages.length; i++) {
-      for (let j = 0; j < messages[i].labels.length; j++) {
-        if (messages[i].labels[j] === label) {
-          messages[i].labels.splice(j, 1);
-        }
-      }
+    if (messageIds.length !== 0) {
+      let options = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          'messageIds': messageIds,
+          'command': 'removeLabel',
+          'label': label,
+        }),
+      };
+
+      fetch(BASE_PATH, options)
+        .then((response) => {
+          if (response.status === 200) {
+
+            let messages = this.state.messages.map((msg) => {
+              if (messageIds.includes(msg.id)) {
+                  let labels = msg.labels.slice();
+                  labels.splice(msg.labels.indexOf(label), 1);
+                  return {...msg, labels: labels}
+              } else {
+                return msg;
+              }
+            });
+
+            this.setState({messages});
+          }
+        });
     }
-
-    this.setState(messages);
   }
 
   deleteMessages() {
