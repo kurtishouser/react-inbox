@@ -40,7 +40,8 @@ class Toolbar extends Component {
   }
 
   toggleRead(e) {
-    this.props.updateReadStatus(parseInt(e.target.value, 10));
+    const status = parseInt(e.target.value, 10) ? true : false;
+    this.props.updateReadStatus(status);
   }
 
   addLabel(e) {
