@@ -41,9 +41,13 @@ class App extends Component {
   }
 
   updateSelectedAllStatus(status) {
-    let messages = this.state.messages.map(msg => msg.selected = status);
 
-    this.setState(messages);
+    this.setState((prevState) => {
+
+      let messages = prevState.messages.map((msg) => ({...msg, selected: status}));
+
+      return {messages};
+    })
   }
 
   updateReadStatus(status) {
