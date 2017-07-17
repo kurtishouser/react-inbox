@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Toolbar from './Toolbar.js';
+import Compose from './Compose.js';
 import Messages from './Messages.js';
 
 const BASE_PATH = "http://localhost:8181/api/messages"
@@ -9,35 +10,79 @@ class App extends Component {
   constructor() {
     super();
 
-    this.state = {messages: []}
-
-    this.updateSelectedAllStatus = this.updateSelectedAllStatus.bind(this);
-    this.updateStarredStatus = this.updateStarredStatus.bind(this);
-    this.updateReadStatus = this.updateReadStatus.bind(this);
-    this.deleteMessages = this.deleteMessages.bind(this);
-    this.addLabels = this.addLabels.bind(this);
-    this.removeLabels = this.removeLabels.bind(this);
-    this.toggleProperty = this.toggleProperty.bind(this);
+    this.state = {
+      messages: [],
+      displayForm: false,
+    }
 
     this.fetchMessages = this.fetchMessages.bind(this);
-
+    this.sendMessage = this.sendMessage.bind(this);
+    this.displayComposeForm = this.displayComposeForm.bind(this);
+    this.updateSelectedAllStatus = this.updateSelectedAllStatus.bind(this);
+    this.updateReadStatus = this.updateReadStatus.bind(this);
+    this.updateStarredStatus = this.updateStarredStatus.bind(this);
+    this.addLabels = this.addLabels.bind(this);
+    this.removeLabels = this.removeLabels.bind(this);
+    this.deleteMessages = this.deleteMessages.bind(this);
+    this.toggleProperty = this.toggleProperty.bind(this);
   }
 
   fetchMessages() {
     fetch(BASE_PATH)
       .then(response => {
-        console.log(response.status, 'Mesages loaded from server');
         return response.json();
       })
       .then(result => {
         let messages = result._embedded.messages;
-        // console.log(messages);
         this.setState({messages});
+      });
+  }
+
+  sendMessage(message) {
+
+    let options = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(message),
+    }
+
+    fetch(BASE_PATH, options)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        let message = {
+          id: result.id,
+          subject: result.subject,
+          starred: result.starred,
+          read: result.read,
+          labels: result.labels,
+          body: result.body,
+          selected: false,
+        }
+
+        this.setState((prevState) => {
+          return {
+            messages: [...prevState.messages, message],
+            displayForm: !prevState.displayForm,
+          }
+        });
       });
   }
 
   getSelectedMessages() {
     return this.state.messages.filter(msg => msg.selected);
+  }
+
+  displayComposeForm() {
+    this.setState((prevState) => {
+      return {
+        messages: [...prevState.messages],
+        displayForm: !prevState.displayForm,
+      }
+    });
   }
 
   updateSelectedAllStatus(status) {
@@ -76,6 +121,8 @@ class App extends Component {
               return msg;
             }
           });
+
+          console.log(messages);
 
           this.setState({messages});
         }
@@ -219,7 +266,8 @@ class App extends Component {
           ...prevState.messages.slice(0, index),
           { ...message, [property]: !message[property] },
           ...prevState.messages.slice(index + 1),
-        ]
+        ],
+        displayForm: prevState.displayForm,
       };
     })
   }
@@ -233,17 +281,24 @@ class App extends Component {
          <div className="container">
           <Toolbar
             messages={this.state.messages}
+            displayComposeForm={this.displayComposeForm}
             updateSelectedAllStatus={this.updateSelectedAllStatus}
             updateReadStatus={this.updateReadStatus}
             deleteMessages={this.deleteMessages}
             addLabels={this.addLabels}
             removeLabels={this.removeLabels}
           />
+          {this.state.displayForm ?
+            <Compose
+              sendMessage={this.sendMessage}
+            />
+          : null
+          }
           <Messages
             messages={this.state.messages}
             updateStarredStatus={this.updateStarredStatus}
             toggleProperty={this.toggleProperty}
-          />
+            />
          </div>
       );
   }

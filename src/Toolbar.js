@@ -5,6 +5,7 @@ class Toolbar extends Component {
   constructor(props) {
     super(props);
 
+    this.toggleComposeForm = this.toggleComposeForm.bind(this);
     this.toggleSelected = this.toggleSelected.bind(this);
     this.toggleRead = this.toggleRead.bind(this);
     this.deleteSelected = this.deleteSelected.bind(this);
@@ -24,6 +25,10 @@ class Toolbar extends Component {
     return this.props.messages.filter(msg => msg.read).length;
   }
 
+  toggleComposeForm() {
+    this.props.displayComposeForm();
+  }
+
   selectAllButtonStatus() {
     if (this.selectedMessageCount() === 0) {
       return 'fa-square-o';
@@ -34,7 +39,7 @@ class Toolbar extends Component {
     }
   }
 
-  toggleSelected () {
+  toggleSelected() {
     let status = (this.messageCount() - this.selectedMessageCount() > 0) ? true : false;
     this.props.updateSelectedAllStatus(status);
   }
@@ -64,8 +69,6 @@ class Toolbar extends Component {
     const unreadMessages = this.messageCount() - this.readMessageCount();
     const selectAllButtonIcon = this.selectAllButtonStatus();
 
-    console.log('Toolbar().render');
-
     return (
       <div className="row toolbar">
         <div className="col-md-12">
@@ -73,6 +76,10 @@ class Toolbar extends Component {
             <span className="badge badge">{unreadMessages}</span>
             unread message{unreadMessages !== 1 ? 's' : ''}
           </p>
+
+          <a className="btn btn-danger" onClick={this.toggleComposeForm}>
+            <i className="fa fa-plus"></i>
+          </a>
 
           <button className={`btn btn-default ${disableSelectAll}`} onClick={this.toggleSelected}>
             <i className={`fa ${selectAllButtonIcon}`} />
