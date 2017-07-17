@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Toolbar from './Toolbar.js';
-import Compose from './Compose.js';
-import Messages from './Messages.js';
+import Toolbar from './components/Toolbar.js';
+import Compose from './components/Compose.js';
+import Messages from './components/Messages.js';
 
 const BASE_PATH = "http://localhost:8181/api/messages"
 
