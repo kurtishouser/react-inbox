@@ -34,7 +34,7 @@ class App extends Component {
       })
       .then(result => {
         let messages = result._embedded.messages;
-        this.setState({messages, displayForm: false});
+        this.setState({messages});
       });
   }
 
@@ -79,7 +79,6 @@ class App extends Component {
   displayComposeForm() {
     this.setState((prevState) => {
       return {
-        messages: [...prevState.messages],
         displayForm: !prevState.displayForm,
       }
     });
@@ -91,7 +90,7 @@ class App extends Component {
 
       let messages = prevState.messages.map((msg) => ({...msg, selected: status}));
 
-      return {messages, displayForm: prevState.displayForm};
+      return {messages};
     });
   }
 
@@ -123,7 +122,7 @@ class App extends Component {
               }
             });
 
-            return ({messages, displayForm: prevState.displayForm});
+            return ({messages});
           });
         }
       });
@@ -184,7 +183,7 @@ class App extends Component {
                 }
               });
 
-              return {messages, displayForm: prevState.displayForm};
+              return {messages};
             });
           }
         });
@@ -225,7 +224,7 @@ class App extends Component {
                 }
               });
 
-              return {messages, displayForm: prevState.displayForm};
+              return {messages};
             });
           }
         });
@@ -253,7 +252,7 @@ class App extends Component {
           this.setState((prevState) => {
             let messages = prevState.messages.filter((msg) => !msg.selected);
 
-            return {messages, displayForm: prevState.displayForm};
+            return {messages};
           });
         }
       });
@@ -271,7 +270,6 @@ class App extends Component {
           { ...message, [property]: !message[property] },
           ...prevState.messages.slice(index + 1),
         ],
-        displayForm: prevState.displayForm,
       };
     })
   }
