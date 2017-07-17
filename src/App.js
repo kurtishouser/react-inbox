@@ -34,7 +34,7 @@ class App extends Component {
       })
       .then(result => {
         let messages = result._embedded.messages;
-        this.setState({messages});
+        this.setState({messages, displayForm: false});
       });
   }
 
@@ -91,8 +91,8 @@ class App extends Component {
 
       let messages = prevState.messages.map((msg) => ({...msg, selected: status}));
 
-      return {messages};
-    })
+      return {messages, displayForm: prevState.displayForm};
+    });
   }
 
   updateReadStatus(status) {
@@ -114,17 +114,17 @@ class App extends Component {
       .then((response) => {
         if (response.status === 200) {
 
-          let messages = this.state.messages.map(msg => {
-            if (msg.selected) {
-              return {...msg, read: status};
-            } else {
-              return msg;
-            }
+          this.setState((prevState) => {
+            let messages = prevState.messages.map(msg => {
+              if (msg.selected) {
+                return {...msg, read: status};
+              } else {
+                return msg;
+              }
+            });
+
+            return ({messages, displayForm: prevState.displayForm});
           });
-
-          console.log(messages);
-
-          this.setState({messages});
         }
       });
   }
@@ -173,22 +173,22 @@ class App extends Component {
         .then((response) => {
           if (response.status === 200) {
 
-            let messages = this.state.messages.map((msg) => {
-              if (messageIds.includes(msg.id)) {
-                  let labels = msg.labels.slice();
-                  labels.push(label);
-                  return {...msg, labels: labels}
-              } else {
-                return msg;
-              }
-            });
+            this.setState((prevState) => {
+              let messages = prevState.messages.map((msg) => {
+                if (messageIds.includes(msg.id)) {
+                    let labels = msg.labels.slice();
+                    labels.push(label);
+                    return {...msg, labels: labels}
+                } else {
+                  return msg;
+                }
+              });
 
-            this.setState({messages});
+              return {messages, displayForm: prevState.displayForm};
+            });
           }
         });
     }
-
-
   }
 
   removeLabels(label) {
@@ -214,17 +214,19 @@ class App extends Component {
         .then((response) => {
           if (response.status === 200) {
 
-            let messages = this.state.messages.map((msg) => {
-              if (messageIds.includes(msg.id)) {
-                  let labels = msg.labels.slice();
-                  labels.splice(msg.labels.indexOf(label), 1);
-                  return {...msg, labels: labels}
-              } else {
-                return msg;
-              }
-            });
+            this.setState((prevState) => {
+              let messages = prevState.messages.map((msg) => {
+                if (messageIds.includes(msg.id)) {
+                    let labels = msg.labels.slice();
+                    labels.splice(msg.labels.indexOf(label), 1);
+                    return {...msg, labels: labels}
+                } else {
+                  return msg;
+                }
+              });
 
-            this.setState({messages});
+              return {messages, displayForm: prevState.displayForm};
+            });
           }
         });
     }
@@ -248,9 +250,11 @@ class App extends Component {
       .then((response) => {
         if (response.status === 200) {
 
-          let messages = this.state.messages.filter((msg) => !msg.selected);
+          this.setState((prevState) => {
+            let messages = prevState.messages.filter((msg) => !msg.selected);
 
-          this.setState({messages});
+            return {messages, displayForm: prevState.displayForm};
+          });
         }
       });
   }
@@ -277,30 +281,31 @@ class App extends Component {
   }
 
   render() {
-      return (
-         <div className="container">
-          <Toolbar
-            messages={this.state.messages}
-            displayComposeForm={this.displayComposeForm}
-            updateSelectedAllStatus={this.updateSelectedAllStatus}
-            updateReadStatus={this.updateReadStatus}
-            deleteMessages={this.deleteMessages}
-            addLabels={this.addLabels}
-            removeLabels={this.removeLabels}
+    const {messages, displayForm} = this.state;
+    return (
+      <div className="container">
+        <Toolbar
+          messages={messages}
+          displayComposeForm={this.displayComposeForm}
+          updateSelectedAllStatus={this.updateSelectedAllStatus}
+          updateReadStatus={this.updateReadStatus}
+          deleteMessages={this.deleteMessages}
+          addLabels={this.addLabels}
+          removeLabels={this.removeLabels}
+        />
+        {displayForm ?
+          <Compose
+            sendMessage={this.sendMessage}
           />
-          {this.state.displayForm ?
-            <Compose
-              sendMessage={this.sendMessage}
-            />
-          : null
-          }
-          <Messages
-            messages={this.state.messages}
-            updateStarredStatus={this.updateStarredStatus}
-            toggleProperty={this.toggleProperty}
-            />
-         </div>
-      );
+        : null
+        }
+        <Messages
+          messages={messages}
+          updateStarredStatus={this.updateStarredStatus}
+          toggleProperty={this.toggleProperty}
+        />
+      </div>
+    );
   }
 }
 

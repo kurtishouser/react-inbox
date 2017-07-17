@@ -16,7 +16,7 @@ class ComposeForm extends Component {
       subject: e.target.subject.value,
       body: e.target.body.value,
     }
-    
+
     if(submittedMessage.subject !== '' && submittedMessage.body !== '') {
       this.props.sendMessage(submittedMessage);
     }
@@ -25,7 +25,6 @@ class ComposeForm extends Component {
   render() {
 
     return(
-
       <form className="form-horizontal well" onSubmit={this.submitForm}>
         <div className="form-group">
           <div className="col-sm-8 col-sm-offset-2">

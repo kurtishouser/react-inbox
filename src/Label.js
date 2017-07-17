@@ -1,10 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Label extends Component {
-
-  render() {
-    return <span className="label label-warning">{this.props.label}</span>
-  }
-}
+const Label = (props) => (
+  <span className="label label-warning">{props.label}</span>
+)
 
 export default Label;
