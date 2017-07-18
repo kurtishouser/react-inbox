@@ -51,7 +51,7 @@ class Toolbar extends Component {
 
   addLabel(e) {
     let label = e.target.value;
-    if (label !== '') this.props.addLabels(label);
+    if (label !== '') this.props.addLabels(label, 'addLabel');
   }
 
   removeLabel(e) {

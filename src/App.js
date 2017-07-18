@@ -25,6 +25,8 @@ class App extends Component {
     this.removeLabels = this.removeLabels.bind(this);
     this.deleteMessages = this.deleteMessages.bind(this);
     this.toggleProperty = this.toggleProperty.bind(this);
+
+    this.patchRequest = this.patchRequest.bind(this);
   }
 
   fetchMessages() {
@@ -94,24 +96,36 @@ class App extends Component {
     });
   }
 
-  updateReadStatus(status) {
-    let selectedMessageIds = this.getSelectedMessages().map(msg => msg.id);
-
+  patchRequest(body) {
+    console.log('PATCH', body.read);
     let options = {
       headers: {
         'Content-Type': 'application/json',
       },
       method: 'PATCH',
-      body: JSON.stringify({
-        "messageIds": selectedMessageIds,
-        "command": "read",
-        "read": status,
-      }),
+      body: JSON.stringify(body),
+    };
+
+    return fetch(BASE_PATH, options)
+      .then((response) => {
+        return response.status;
+      })
+
+  }
+
+  updateReadStatus(status) {
+
+    let body = {
+      "messageIds": this.state.messages.filter(msg => msg.selected)
+                                       .map(msg => msg.id),
+      "command": "read",
+      "read": status,
     }
 
-    fetch(BASE_PATH, options)
-      .then((response) => {
-        if (response.status === 200) {
+    this.patchRequest(body)
+      .then((responseStatus) => {
+
+        if (responseStatus === 200) {
 
           this.setState((prevState) => {
             let messages = prevState.messages.map(msg => {
@@ -125,25 +139,19 @@ class App extends Component {
             return ({messages});
           });
         }
-      });
+      })
   }
 
   updateStarredStatus(message, command) {
-    let options = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
+    let body = {
         "messageIds": [message.id],
         "command": command,
         [command]: !message.starred,
-      }),
     }
 
-    fetch(BASE_PATH, options)
-      .then((response) => {
-        if (response.status === 200) {
+    this.patchRequest(body)
+      .then((status) => {
+        if (status === 200) {
           this.toggleProperty(message, 'starred');
         }
       });
@@ -232,22 +240,15 @@ class App extends Component {
   }
 
   deleteMessages() {
-    let selectedMessageIds = this.getSelectedMessages().map(msg => msg.id);
-
-    let options = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
-        'messageIds': selectedMessageIds,
-        'command': 'delete',
-      }),
+    let body = {
+      "messageIds": this.state.messages.filter(msg => msg.selected)
+                                       .map(msg => msg.id),
+      command: 'delete'
     }
 
-    fetch(BASE_PATH, options)
-      .then((response) => {
-        if (response.status === 200) {
+    this.patchRequest(body)
+      .then((responseStatus) => {
+        if (responseStatus === 200) {
 
           this.setState((prevState) => {
             let messages = prevState.messages.filter((msg) => !msg.selected);
@@ -255,7 +256,7 @@ class App extends Component {
             return {messages};
           });
         }
-      });
+      })
   }
 
   toggleProperty(message, property) {
