@@ -1,21 +1,43 @@
 import React, { Component } from 'react';
+// import Compose from './components/Compose.js';
 import Message from './Message.js';
+import { connect } from 'react-redux';
+import { fetchMessages } from '../actions';
+import { bindActionCreators } from 'redux';
 
 class Messages extends Component {
 
+  componentDidMount() {
+    this.props.fetchMessages();
+  }
+
   render() {
-    return (
-      <div>
-        {this.props.messages.map((message) => {
-          return <Message
-                    message={message}
-                    key={message.id}
-                    updateStarredStatus={this.props.updateStarredStatus}
-                    toggleProperty={this.props.toggleProperty} />
-        })}
-      </div>
-    )
+    const { loading, messageIds } = this.props;
+    return !loading ?
+      (
+        <div>
+          {/*{displayForm ? <Compose /> : null}*/}
+          { messageIds.map((messageId) => <Message key={messageId} messageId={messageId} />) }
+        </div>
+      ) :
+      (<div>Loading...</div>)
   }
 }
 
-export default Messages;
+const mapStateToProps = state => {
+  const loading = state.messages.messagesLoading;
+  const messageIds = state.messages.ids;
+  return {
+    loading,
+    messageIds
+  }
+}
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  fetchMessages
+}, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Messages);

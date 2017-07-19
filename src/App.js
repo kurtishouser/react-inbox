@@ -1,311 +1,332 @@
 import React, { Component } from 'react';
 import Toolbar from './components/Toolbar.js';
-import Compose from './components/Compose.js';
+// import Compose from './components/Compose.js';
 import Messages from './components/Messages.js';
-
-const BASE_PATH = "http://localhost:8181/api/messages"
 
 class App extends Component {
 
-  constructor() {
-    super();
+  // constructor() {
+  //   super();
+  //
+  //   this.state = {
+  //     messages: [],
+  //     displayForm: false,
+  //   }
+  //
+  //   this.fetchMessages = this.fetchMessages.bind(this);
+  //   this.sendMessage = this.sendMessage.bind(this);
+  //   this.displayComposeForm = this.displayComposeForm.bind(this);
+  //   this.updateSelectedAllStatus = this.updateSelectedAllStatus.bind(this);
+  //   this.updateReadStatus = this.updateReadStatus.bind(this);
+  //   this.updateStarredStatus = this.updateStarredStatus.bind(this);
+  //   this.addLabels = this.addLabels.bind(this);
+  //   this.removeLabels = this.removeLabels.bind(this);
+  //   this.deleteMessages = this.deleteMessages.bind(this);
+  //   this.toggleProperty = this.toggleProperty.bind(this);
+  //
+  //   this.patchRequest = this.patchRequest.bind(this);
+  // }
 
-    this.state = {
-      messages: [],
-      displayForm: false,
-    }
+  // fetchMessages() {
+  //   fetch(BASE_PATH)
+  //     .then(response => {
+  //       return response.json();
+  //     })
+  //     .then(result => {
+  //
+  //       let alteredState = {
+  //         ids: result._embedded.messages.map((msg) => msg.id),
+  //         messagesById: result._embedded.messages.map(msg => {
+  //           msg.selected = false;
+  //           return {[msg.id]: msg}
+  //         })
+  //       }
+  //       console.log(alteredState);
+  //
+  //       let messages = result._embedded.messages;
+  //       this.setState({messages});
+  //     });
+  // }
+  //
+  // sendMessage(message) {
+  //
+  //   let options = {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     method: 'POST',
+  //     body: JSON.stringify(message),
+  //   }
+  //
+  //   fetch(BASE_PATH, options)
+  //     .then((response) => {
+  //       return response.json();
+  //     })
+  //     .then((result) => {
+  //       let message = {
+  //         id: result.id,
+  //         subject: result.subject,
+  //         starred: result.starred,
+  //         read: result.read,
+  //         labels: result.labels,
+  //         body: result.body,
+  //         selected: false,
+  //       }
+  //
+  //       this.setState((prevState) => {
+  //         return {
+  //           messages: [...prevState.messages, message],
+  //           displayForm: !prevState.displayForm,
+  //         }
+  //       });
+  //     });
+  // }
+  //
+  // getSelectedMessages() {
+  //   return this.state.messages.filter(msg => msg.selected);
+  // }
+  //
+  // displayComposeForm() {
+  //   this.setState((prevState) => {
+  //     return {
+  //       displayForm: !prevState.displayForm,
+  //     }
+  //   });
+  // }
+  //
+  // updateSelectedAllStatus(status) {
+  //
+  //   this.setState((prevState) => {
+  //
+  //     let messages = prevState.messages.map((msg) => ({...msg, selected: status}));
+  //
+  //     return {messages};
+  //   });
+  // }
+  //
+  // patchRequest(body) {
+  //   console.log('PATCH', body.read);
+  //   let options = {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     method: 'PATCH',
+  //     body: JSON.stringify(body),
+  //   };
+  //
+  //   return fetch(BASE_PATH, options)
+  //     .then((response) => {
+  //       return response.status;
+  //     })
+  //
+  // }
+  //
+  // updateReadStatus(status) {
+  //
+  //   let body = {
+  //     "messageIds": this.state.messages.filter(msg => msg.selected)
+  //                                      .map(msg => msg.id),
+  //     "command": "read",
+  //     "read": status,
+  //   }
+  //
+  //   this.patchRequest(body)
+  //     .then((responseStatus) => {
+  //
+  //       if (responseStatus === 200) {
+  //
+  //         this.setState((prevState) => {
+  //           let messages = prevState.messages.map(msg => {
+  //             if (msg.selected) {
+  //               return {...msg, read: status};
+  //             } else {
+  //               return msg;
+  //             }
+  //           });
+  //
+  //           return ({messages});
+  //         });
+  //       }
+  //     })
+  // }
+  //
+  // updateStarredStatus(message, command) {
+  //   let body = {
+  //       "messageIds": [message.id],
+  //       "command": command,
+  //       [command]: !message.starred,
+  //   }
+  //
+  //   this.patchRequest(body)
+  //     .then((status) => {
+  //       if (status === 200) {
+  //         this.toggleProperty(message, 'starred');
+  //       }
+  //     });
+  // }
+  //
+  // addLabels(label) {
+  //
+  //   let messageIds = this.getSelectedMessages()
+  //                        .filter((msg) => !msg.labels.includes(label))
+  //                        .map((msg) => msg.id);
+  //
+  //   if (messageIds.length !== 0) {
+  //     let options = {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       method: 'PATCH',
+  //       body: JSON.stringify({
+  //         'messageIds': messageIds,
+  //         'command': 'addLabel',
+  //         'label': label,
+  //       }),
+  //     };
+  //
+  //     fetch(BASE_PATH, options)
+  //       .then((response) => {
+  //         if (response.status === 200) {
+  //
+  //           this.setState((prevState) => {
+  //             let messages = prevState.messages.map((msg) => {
+  //               if (messageIds.includes(msg.id)) {
+  //                   let labels = msg.labels.slice();
+  //                   labels.push(label);
+  //                   return {...msg, labels: labels}
+  //               } else {
+  //                 return msg;
+  //               }
+  //             });
+  //
+  //             return {messages};
+  //           });
+  //         }
+  //       });
+  //   }
+  // }
+  //
+  // removeLabels(label) {
+  //
+  //   let messageIds = this.getSelectedMessages()
+  //                        .filter((msg) => msg.labels.includes(label))
+  //                        .map((msg) => msg.id);
+  //
+  //   if (messageIds.length !== 0) {
+  //     let options = {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       method: 'PATCH',
+  //       body: JSON.stringify({
+  //         'messageIds': messageIds,
+  //         'command': 'removeLabel',
+  //         'label': label,
+  //       }),
+  //     };
+  //
+  //     fetch(BASE_PATH, options)
+  //       .then((response) => {
+  //         if (response.status === 200) {
+  //
+  //           this.setState((prevState) => {
+  //             let messages = prevState.messages.map((msg) => {
+  //               if (messageIds.includes(msg.id)) {
+  //                   let labels = msg.labels.slice();
+  //                   labels.splice(msg.labels.indexOf(label), 1);
+  //                   return {...msg, labels: labels}
+  //               } else {
+  //                 return msg;
+  //               }
+  //             });
+  //
+  //             return {messages};
+  //           });
+  //         }
+  //       });
+  //   }
+  // }
+  //
+  // deleteMessages() {
+  //   let body = {
+  //     "messageIds": this.state.messages.filter(msg => msg.selected)
+  //                                      .map(msg => msg.id),
+  //     command: 'delete'
+  //   }
+  //
+  //   this.patchRequest(body)
+  //     .then((responseStatus) => {
+  //       if (responseStatus === 200) {
+  //
+  //         this.setState((prevState) => {
+  //           let messages = prevState.messages.filter((msg) => !msg.selected);
+  //
+  //           return {messages};
+  //         });
+  //       }
+  //     })
+  // }
+  //
+  // toggleProperty(message, property) {
+  //
+  //   this.setState((prevState) => {
+  //
+  //     const index = prevState.messages.indexOf(message);
+  //
+  //     return {
+  //       messages: [
+  //         ...prevState.messages.slice(0, index),
+  //         { ...message, [property]: !message[property] },
+  //         ...prevState.messages.slice(index + 1),
+  //       ],
+  //     };
+  //   })
+  // }
 
-    this.fetchMessages = this.fetchMessages.bind(this);
-    this.sendMessage = this.sendMessage.bind(this);
-    this.displayComposeForm = this.displayComposeForm.bind(this);
-    this.updateSelectedAllStatus = this.updateSelectedAllStatus.bind(this);
-    this.updateReadStatus = this.updateReadStatus.bind(this);
-    this.updateStarredStatus = this.updateStarredStatus.bind(this);
-    this.addLabels = this.addLabels.bind(this);
-    this.removeLabels = this.removeLabels.bind(this);
-    this.deleteMessages = this.deleteMessages.bind(this);
-    this.toggleProperty = this.toggleProperty.bind(this);
-
-    this.patchRequest = this.patchRequest.bind(this);
-  }
-
-  fetchMessages() {
-    fetch(BASE_PATH)
-      .then(response => {
-        return response.json();
-      })
-      .then(result => {
-        let messages = result._embedded.messages;
-        this.setState({messages});
-      });
-  }
-
-  sendMessage(message) {
-
-    let options = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify(message),
-    }
-
-    fetch(BASE_PATH, options)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        let message = {
-          id: result.id,
-          subject: result.subject,
-          starred: result.starred,
-          read: result.read,
-          labels: result.labels,
-          body: result.body,
-          selected: false,
-        }
-
-        this.setState((prevState) => {
-          return {
-            messages: [...prevState.messages, message],
-            displayForm: !prevState.displayForm,
-          }
-        });
-      });
-  }
-
-  getSelectedMessages() {
-    return this.state.messages.filter(msg => msg.selected);
-  }
-
-  displayComposeForm() {
-    this.setState((prevState) => {
-      return {
-        displayForm: !prevState.displayForm,
-      }
-    });
-  }
-
-  updateSelectedAllStatus(status) {
-
-    this.setState((prevState) => {
-
-      let messages = prevState.messages.map((msg) => ({...msg, selected: status}));
-
-      return {messages};
-    });
-  }
-
-  patchRequest(body) {
-    console.log('PATCH', body.read);
-    let options = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify(body),
-    };
-
-    return fetch(BASE_PATH, options)
-      .then((response) => {
-        return response.status;
-      })
-
-  }
-
-  updateReadStatus(status) {
-
-    let body = {
-      "messageIds": this.state.messages.filter(msg => msg.selected)
-                                       .map(msg => msg.id),
-      "command": "read",
-      "read": status,
-    }
-
-    this.patchRequest(body)
-      .then((responseStatus) => {
-
-        if (responseStatus === 200) {
-
-          this.setState((prevState) => {
-            let messages = prevState.messages.map(msg => {
-              if (msg.selected) {
-                return {...msg, read: status};
-              } else {
-                return msg;
-              }
-            });
-
-            return ({messages});
-          });
-        }
-      })
-  }
-
-  updateStarredStatus(message, command) {
-    let body = {
-        "messageIds": [message.id],
-        "command": command,
-        [command]: !message.starred,
-    }
-
-    this.patchRequest(body)
-      .then((status) => {
-        if (status === 200) {
-          this.toggleProperty(message, 'starred');
-        }
-      });
-  }
-
-  addLabels(label) {
-
-    let messageIds = this.getSelectedMessages()
-                         .filter((msg) => !msg.labels.includes(label))
-                         .map((msg) => msg.id);
-
-    if (messageIds.length !== 0) {
-      let options = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'PATCH',
-        body: JSON.stringify({
-          'messageIds': messageIds,
-          'command': 'addLabel',
-          'label': label,
-        }),
-      };
-
-      fetch(BASE_PATH, options)
-        .then((response) => {
-          if (response.status === 200) {
-
-            this.setState((prevState) => {
-              let messages = prevState.messages.map((msg) => {
-                if (messageIds.includes(msg.id)) {
-                    let labels = msg.labels.slice();
-                    labels.push(label);
-                    return {...msg, labels: labels}
-                } else {
-                  return msg;
-                }
-              });
-
-              return {messages};
-            });
-          }
-        });
-    }
-  }
-
-  removeLabels(label) {
-
-    let messageIds = this.getSelectedMessages()
-                         .filter((msg) => msg.labels.includes(label))
-                         .map((msg) => msg.id);
-
-    if (messageIds.length !== 0) {
-      let options = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'PATCH',
-        body: JSON.stringify({
-          'messageIds': messageIds,
-          'command': 'removeLabel',
-          'label': label,
-        }),
-      };
-
-      fetch(BASE_PATH, options)
-        .then((response) => {
-          if (response.status === 200) {
-
-            this.setState((prevState) => {
-              let messages = prevState.messages.map((msg) => {
-                if (messageIds.includes(msg.id)) {
-                    let labels = msg.labels.slice();
-                    labels.splice(msg.labels.indexOf(label), 1);
-                    return {...msg, labels: labels}
-                } else {
-                  return msg;
-                }
-              });
-
-              return {messages};
-            });
-          }
-        });
-    }
-  }
-
-  deleteMessages() {
-    let body = {
-      "messageIds": this.state.messages.filter(msg => msg.selected)
-                                       .map(msg => msg.id),
-      command: 'delete'
-    }
-
-    this.patchRequest(body)
-      .then((responseStatus) => {
-        if (responseStatus === 200) {
-
-          this.setState((prevState) => {
-            let messages = prevState.messages.filter((msg) => !msg.selected);
-
-            return {messages};
-          });
-        }
-      })
-  }
-
-  toggleProperty(message, property) {
-
-    this.setState((prevState) => {
-
-      const index = prevState.messages.indexOf(message);
-
-      return {
-        messages: [
-          ...prevState.messages.slice(0, index),
-          { ...message, [property]: !message[property] },
-          ...prevState.messages.slice(index + 1),
-        ],
-      };
-    })
-  }
-
-  componentDidMount() {
-    this.fetchMessages();
-  }
 
   render() {
-    const {messages, displayForm} = this.state;
     return (
       <div className="container">
-        <Toolbar
-          messages={messages}
-          displayComposeForm={this.displayComposeForm}
-          updateSelectedAllStatus={this.updateSelectedAllStatus}
-          updateReadStatus={this.updateReadStatus}
-          deleteMessages={this.deleteMessages}
-          addLabels={this.addLabels}
-          removeLabels={this.removeLabels}
-        />
-        {displayForm ?
-          <Compose
-            sendMessage={this.sendMessage}
-          />
-        : null
-        }
-        <Messages
-          messages={messages}
-          updateStarredStatus={this.updateStarredStatus}
-          toggleProperty={this.toggleProperty}
-        />
+        <h1>Get yer Redux all in a row!</h1>
+        {/*<Toolbar />*/}
+        {/*{displayForm ? <Compose /> : null}*/}
+        <Messages />
       </div>
     );
   }
+
+
+
+
+  // render() {
+  //   const {messages, displayForm} = this.state;
+  //   return (
+  //     <div className="container">
+  //       <Toolbar
+  //         messages={messages}
+  //         displayComposeForm={this.displayComposeForm}
+  //         updateSelectedAllStatus={this.updateSelectedAllStatus}
+  //         updateReadStatus={this.updateReadStatus}
+  //         deleteMessages={this.deleteMessages}
+  //         addLabels={this.addLabels}
+  //         removeLabels={this.removeLabels}
+  //       />
+  //       {displayForm ?
+  //         <Compose
+  //           sendMessage={this.sendMessage}
+  //         />
+  //       : null
+  //       }
+  //       <Messages
+  //         messages={messages}
+  //         updateStarredStatus={this.updateStarredStatus}
+  //         toggleProperty={this.toggleProperty}
+  //       />
+  //     </div>
+  //   );
+  // }
+
+
 }
 
 export default App;

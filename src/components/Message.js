@@ -1,50 +1,36 @@
- import React, {Component} from 'react';
+import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import Label from './Label.js';
+import { toggleSelected, toggleStarred } from '../actions';
+import { bindActionCreators } from 'redux';
 
 class Message extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.toggleSelected = this.toggleSelected.bind(this);
-    this.toggleStarred = this.toggleStarred.bind(this);
-  }
-
-  toggleSelected() {
-    let message = this.props.message;
-
-    this.props.toggleProperty(message, 'selected');
-  }
-
-  toggleStarred() {
-    let message = this.props.message;
-    this.props.updateStarredStatus(message, 'star');
-  }
-
   render() {
-    const read = this.props.message.read ? 'read' : 'unread';
-    const selected = this.props.message.selected ? 'selected' : '';
-    const checked = this.props.message.selected ? true : false;
-    const starred = this.props.message.starred ? 'fa-star' : 'fa-star-o';
+    const { id, selected, read, starred, subject, labels } = this.props.message;
+    const isRead= read ? 'read' : 'unread';
+    const isSelected = selected ? 'selected' : '';
+    const isChecked = selected ? true : false;
+    const isStarred = starred ? 'fa-star' : 'fa-star-o';
 
     return (
-      <div className={`row message ${read} ${selected}`}>
+      <div className={`row message ${isRead} ${isSelected}`}>
         <div className="col-xs-1">
           <div className="row">
             <div className="col-xs-2">
-              <input type="checkbox" checked={checked} onChange={this.toggleSelected}/>
+              <input type="checkbox" checked={isChecked} onChange={() => this.props.toggleSelected(this.props.messageId)}/>
             </div>
             <div className="col-xs-2">
-              <i className={`star fa ${starred}`} onClick={this.toggleStarred}></i>
+              <i className={`star fa ${isStarred}`} onClick={() => this.props.toggleStarred(this.props.messageId)}></i>
             </div>
           </div>
         </div>
         <div className="col-xs-11">
-          {this.props.message.labels.map((label) => {
+          {labels.map((label) => {
             return <Label key={label} label={label} />
           })}
           <a href="/">
-            {this.props.message.subject}
+            {subject}
           </a>
         </div>
       </div>
@@ -52,4 +38,21 @@ class Message extends Component {
   }
 }
 
-export default Message;
+const mapStateToProps = (state, ownProps) => {
+  const message = state.messages.messagesById[ownProps.messageId];
+  // const { selected, read, starred, subject, labels } = message;
+  return {
+    message,
+    // selected, read, starred, subject, labels
+  }
+}
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  toggleSelected,
+  toggleStarred
+}, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Message);
