@@ -1,13 +1,11 @@
 const BASE_PATH = 'http://localhost:8181/api/messages';
+
 export default class Api {
 
 
   static fetchMessages() {
     return fetch(BASE_PATH).then(response => response.json());
-
-
   }
-
 
   static patchRequest(body) {
     let options = {

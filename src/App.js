@@ -287,9 +287,9 @@ class App extends Component {
   render() {
     return (
       <div className="container">
-        <h1>Get yer Redux all in a row!</h1>
-        {/*<Toolbar />*/}
-        {/*{displayForm ? <Compose /> : null}*/}
+        <h1>Get all yer Redux in a row!</h1>
+        <Toolbar />
+        {/* {displayForm ? <Compose /> : null} */}
         <Messages />
       </div>
     );

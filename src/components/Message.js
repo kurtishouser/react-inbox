@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 class Message extends Component {
 
   render() {
-    const { id, selected, read, starred, subject, labels } = this.props.message;
+    const { selected, read, starred, subject, labels } = this.props.message;
     const isRead= read ? 'read' : 'unread';
     const isSelected = selected ? 'selected' : '';
     const isChecked = selected ? true : false;
@@ -40,10 +40,8 @@ class Message extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const message = state.messages.messagesById[ownProps.messageId];
-  // const { selected, read, starred, subject, labels } = message;
   return {
     message,
-    // selected, read, starred, subject, labels
   }
 }
 

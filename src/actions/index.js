@@ -1,4 +1,4 @@
-import store from '../store';
+// import store from '../store';
 export const MESSAGES_PENDING = 'MESSAGES_PENDING';
 export const MESSAGES_RECEIVED = 'MESSAGES_RECEIVED';
 export function fetchMessages() {
@@ -40,9 +40,108 @@ export function toggleStarred(id) {
 
     const response = await Api.patchRequest(body)
 
-    return dispatch({
-      type: TOGGLE_STARRED,
-      id
-  })
+    if (response === 200) {
+      return dispatch({
+        type: TOGGLE_STARRED,
+        id
+      });
+    }
+  }
+}
+
+export const TOGGLE_SELECT_ALL ='TOGGLE_SELECT_ALL';
+export function toggleSelectAll(status) {
+  console.log(status);
+  return {
+    type: TOGGLE_SELECT_ALL,
+    status
+  }
+}
+
+export const UPDATE_READ_STATUS = 'UPDATE_READ_STATUS';
+export function updateReadStatus(status) {
+  return async (dispatch, getState, { Api }) => {
+
+      let body = {
+        'messageIds': getState().messages.ids.filter(id => (
+          getState().messages.messagesById[id].selected)),
+        'command': 'read',
+        'read': status,
+      }
+
+      const response = await Api.patchRequest(body)
+
+      if (response === 200) {
+        return dispatch({
+          type: UPDATE_READ_STATUS,
+          status
+        });
+      }
+  }
+}
+
+export const ADD_LABEL = 'ADD_LABEL';
+export function addLabel(label) {
+  return async (dispatch, getState, { Api }) => {
+
+      let body = {
+        'messageIds': getState().messages.ids.filter(id => (
+          getState().messages.messagesById[id].selected &&
+          !getState().messages.messagesById[id].labels.includes(label))),
+        'command': 'addLabel',
+        'label': label,
+      }
+
+      const response = await Api.patchRequest(body)
+
+      if (response === 200) {
+        return dispatch({
+          type: ADD_LABEL,
+          label
+        });
+      }
+  }
+}
+
+export const REMOVE_LABEL = 'REMOVE_LABEL';
+export function removeLabel(label) {
+  return async (dispatch, getState, { Api }) => {
+
+      let body = {
+        'messageIds': getState().messages.ids.filter(id => (
+          getState().messages.messagesById[id].selected &&
+          getState().messages.messagesById[id].labels.includes(label))),
+        'command': 'removeLabel',
+        'label': label,
+      }
+
+      const response = await Api.patchRequest(body)
+
+      if (response === 200) {
+        return dispatch({
+          type: REMOVE_LABEL,
+          label
+        });
+      }
+  }
+}
+
+export const DELETE_MESSAGES= 'DELETE_MESSAGES';
+export function deleteMessages() {
+  return async (dispatch, getState, { Api }) => {
+
+      let body = {
+        'messageIds': getState().messages.ids.filter(id => (
+          getState().messages.messagesById[id].selected)),
+        'command': 'delete',
+      }
+
+      const response = await Api.patchRequest(body)
+
+      if (response === 200) {
+        return dispatch({
+          type: DELETE_MESSAGES,
+        });
+      }
   }
 }
