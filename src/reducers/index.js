@@ -9,7 +9,6 @@ import { MESSAGES_PENDING,
          REMOVE_LABEL,
          DELETE_MESSAGES } from '../actions';
 
-
 function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, action) {
   switch (action.type) {
 
@@ -17,16 +16,15 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
       return { ...state, messagesLoading: true }
 
     case MESSAGES_RECEIVED:
-      // const { messages } = action;
-       return {
-         ids: action.messages.map(message => message.id),
-         messagesById: action.messages.reduce((result, msg) => {
-           msg.selected = false;
-           result[msg.id] = msg;
-           return result;
-         }, {}),
-         messagesLoading: false
-       }
+      return {
+       ids: action.messages.map(message => message.id),
+       messagesById: action.messages.reduce((result, msg) => {
+         msg.selected = false;
+         result[msg.id] = msg;
+         return result;
+       }, {}),
+       messagesLoading: false
+      }
 
     case TOGGLE_SELECTED:
      return {
@@ -81,50 +79,29 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
         newState.messagesById[id] = newMsg;
       })
 
-      // ---------
-      // let updatedMsg = {};
-      // let newMessages = {};
-      // for (var key in state.messagesById) {
-      //   if (state.messagesById[key].selected) {
-      //     newMessages = {...state.messagesById,
-      //                    [state.messagesById[key].id]: {
-      //                      ...state.messagesById[key],
-      //                      read: action.status}};
-      //     console.log(newMessages);
-      //     // updatedMsg = {...state.messagesById[key], read: action.status};
-      //     console.log(updatedMsg);
-      //   }
-      //   else {
-      //     // newMessages = {...state.messagesById};
-      //   }
-      // }
-      // --------------
-      // let stateClone = { ...state.messagesById };
-      // for (var key in state.messagesById) {
-      //   if (state.messagesById[key].selected) {
-      //     stateClone = {[state.messagesById[key]]:{...state.messagesById[key], read: action.status}, ...stateClone};
-      //
-      //   }
-      // }
-      // console.log(stateClone);
-
       return newState
 
     case ADD_LABEL:
-      console.log('ADD_LABEL reducer');
+      console.log('TODO: ADD_LABEL reducer');
       return state
 
     case REMOVE_LABEL:
-    console.log('REMOVE_LABEL reducer');
-    return state
+      console.log('TODO: REMOVE_LABEL reducer');
+      return state
 
 
     case DELETE_MESSAGES:
-    console.log('DELETE_MESSAGES reducer');
+      var remainingIds = state.ids.filter(id => !state.messagesById[id].selected);
 
+      var newMsgs = { ...state.messagesById };
 
-    return state
+      state.ids.forEach(id => {
+        if (newMsgs[id].selected) {
+          delete newMsgs[id];
+        }
+      })
 
+    return { ...state, ids: remainingIds, messagesById: newMsgs };
 
     default:
       return state
@@ -134,16 +111,3 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
 export default combineReducers({
   messages
 })
-
-
-
-// return {
-//         ...state,
-//         messagesById: {
-//           ...state.messagesById,
-//           [msg.id]: {
-//             ...state.messagesById[msg.id],
-//             [property]: !state.messagesById[msg.id][property]
-//           }
-//         }
-//       };

@@ -72,8 +72,8 @@ class Toolbar extends Component {
 const mapStateToProps = state => {
   const messageIds = state.messages.ids;
   const messagesById = state.messages.messagesById;
-  const selectedMessageCount = messageIds.filter(id => messagesById[id].selected ).length;
-  const unreadMessageCount = messageIds.filter(id => !messagesById[id].read ).length;
+  const selectedMessageCount = messageIds.filter(id => messagesById[id].selected).length;
+  const unreadMessageCount = messageIds.filter(id => !messagesById[id].read).length;
 
   return {
     messageIds,
@@ -96,53 +96,10 @@ export default connect(
 )(Toolbar);
 
 // react version
-// constructor(props) {
-//   super(props);
-//
-//   this.toggleComposeForm = this.toggleComposeForm.bind(this);
-//   this.toggleSelected = this.toggleSelected.bind(this);
-//   this.toggleRead = this.toggleRead.bind(this);
-//   this.deleteSelected = this.deleteSelected.bind(this);
-//   this.addLabel = this.addLabel.bind(this);
-//   this.removeLabel = this.removeLabel.bind(this);
-// }
 
-// messageCount() {
-//   return this.props.messages.length;
-// }
-//
-// selectedMessageCount() {
-//   return this.props.messages.filter(msg => msg.selected).length;
-// }
-//
-// readMessageCount() {
-//   return this.props.messages.filter(msg => msg.read).length;
-// }
-//
 // toggleComposeForm() {
 //   this.props.displayComposeForm();
 // }
-//
-// selectAllButtonStatus() {
-//   if (this.selectedMessageCount() === 0) {
-//     return 'fa-square-o';
-//   } else if (this.selectedMessageCount() === this.messageCount()) {
-//     return 'fa-check-square-o';
-//   } else if (this.selectedMessageCount() < this.messageCount()) {
-//     return 'fa-minus-square-o';
-//   }
-// }
-//
-// toggleSelected() {
-//   let status = (this.messageCount() - this.selectedMessageCount() > 0) ? true : false;
-//   this.props.updateSelectedAllStatus(status);
-// }
-//
-// toggleRead(e) {
-//   const status = parseInt(e.target.value, 10) ? true : false;
-//   this.props.updateReadStatus(status);
-// }
-//
 // addLabel(e) {
 //   let label = e.target.value;
 //   if (label !== '') this.props.addLabels(label, 'addLabel');
