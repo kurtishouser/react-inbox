@@ -71,7 +71,7 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
     case UPDATE_READ_STATUS:
       newState = {...state, messagesById: {...state.messagesById}};
 
-      state.ids.filter(id => state.messagesById[id].selected).forEach(id => {
+      action.messageIds.forEach(id => {
         newState.messagesById[id] = {...state.messagesById[id], read: action.status};
       });
 
@@ -82,7 +82,6 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
       newState = {...state, messagesById: {...state.messagesById}};
 
       action.messageIds.forEach(id => {
-        console.log('adding', action.label);
         let labels = [ ...state.messagesById[id].labels, action.label ];
         newState.messagesById[id] = {...state.messagesById[id], labels: labels};
       });
@@ -93,7 +92,6 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
       newState = {...state, messagesById: {...state.messagesById}};
 
       action.messageIds.forEach(id => {
-        console.log('deleting', action.label);
         let labels = state.messagesById[id].labels.slice();
         labels.splice(state.messagesById[id].labels.indexOf(action.label), 1);
         newState.messagesById[id] = {...state.messagesById[id], labels: labels};

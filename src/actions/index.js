@@ -73,20 +73,28 @@ export const UPDATE_READ_STATUS = 'UPDATE_READ_STATUS';
 export function updateReadStatus(status) {
   return async (dispatch, getState, { Api }) => {
 
-    let body = {
-      'messageIds': getState().messages.ids.filter(id => (
-        getState().messages.messagesById[id].selected)),
-      'command': 'read',
-      'read': status,
-    }
+    let messageIds = getState().messages.ids.filter(id => (
+      getState().messages.messagesById[id].selected &&
+      getState().messages.messagesById[id].read !== status));
 
-    const response = await Api.patchRequest(body)
+    // only make the API call and dispatch action when there are IDs
+    if (messageIds.length) {
+      let body = {
+        'messageIds': getState().messages.ids.filter(id => (
+          getState().messages.messagesById[id].selected)),
+          'command': 'read',
+          'read': status,
+        }
 
-    if (response === 200) {
-      return dispatch({
-        type: UPDATE_READ_STATUS,
-        status
-      });
+      const response = await Api.patchRequest(body)
+
+      if (response === 200) {
+        return dispatch({
+          type: UPDATE_READ_STATUS,
+          status,
+          messageIds // optimizes reducer
+        });
+      }
     }
   }
 }
@@ -113,7 +121,7 @@ export function addLabel(label) {
         return dispatch({
           type: ADD_LABEL,
           label,
-          messageIds
+          messageIds // optimizes reducer
         });
       }
     }
@@ -142,7 +150,7 @@ export function removeLabel(label) {
         return dispatch({
           type: REMOVE_LABEL,
           label,
-          messageIds
+          messageIds // optimizes reducer
         });
       }
     }
@@ -153,9 +161,12 @@ export const DELETE_MESSAGES= 'DELETE_MESSAGES';
 export function deleteMessages() {
   return async (dispatch, getState, { Api }) => {
 
+    let messageIds = getState().messages.ids.filter(id => (
+      getState().messages.messagesById[id].selected));
+
+    if (messageIds.length) {
       let body = {
-        'messageIds': getState().messages.ids.filter(id => (
-          getState().messages.messagesById[id].selected)),
+        'messageIds': messageIds,
         'command': 'delete',
       }
 
@@ -166,5 +177,6 @@ export function deleteMessages() {
           type: DELETE_MESSAGES,
         });
       }
+    }
   }
 }
