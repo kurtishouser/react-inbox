@@ -11,21 +11,24 @@ import { MESSAGES_PENDING,
          DELETE_MESSAGES } from '../actions';
 
 function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, action) {
+
+  let newState = {};
+
   switch (action.type) {
 
     case MESSAGES_PENDING:
-      return { ...state, messagesLoading: true }
+      return { ...state, messagesLoading: true };
 
     case MESSAGES_RECEIVED:
       return {
-       ids: action.messages.map(message => message.id),
-       messagesById: action.messages.reduce((result, msg) => {
-         msg.selected = false;
-         result[msg.id] = msg;
-         return result;
-       }, {}),
-       messagesLoading: false
-      }
+        ids: action.messages.map(message => message.id),
+        messagesById: action.messages.reduce((result, msg) => {
+          msg.selected = false;
+          result[msg.id] = msg;
+          return result;
+        }, {}),
+        messagesLoading: false
+      };
 
     case SEND_MESSAGE:
       console.log('TODO: SEND_MESSAGE reducer');
@@ -56,33 +59,24 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
       }
 
     case TOGGLE_SELECT_ALL:
-      console.log('reducer', action.status);
+      newState = {...state, newMessagesById: {...state.messagesById}};
 
-      var selectedIds = state.ids;
-      var newState = {...state};
-      var newMessagesById = {...state.messagesById};
-      newState.messagesById = newMessagesById;
+      state.ids.forEach(id => {
+        newState.messagesById[id] = {...state.messagesById[id], selected: action.status};
+      });
 
-      selectedIds.forEach(id => {
-        var newMsg = {...state.messagesById[id], selected: action.status};
-        newState.messagesById[id] = newMsg;
-      })
+      return newState;
 
-      return newState
 
     case UPDATE_READ_STATUS:
+      newState = {...state, messagesById: {...state.messagesById}};
 
-      var selectedIds = state.ids.filter(id => state.messagesById[id].selected);
-      var newState = {...state};
-      var newMessagesById = {...state.messagesById};
-      newState.messagesById = newMessagesById;
+      state.ids.filter(id => state.messagesById[id].selected).forEach(id => {
+        newState.messagesById[id] = {...state.messagesById[id], read: action.status};
+      });
 
-      selectedIds.forEach(id => {
-        var newMsg = {...state.messagesById[id], read: action.status};
-        newState.messagesById[id] = newMsg;
-      })
-
-      return newState
+      return newState;
+      // return updateProperty('read', action.status); // experimental
 
     case ADD_LABEL:
       console.log('TODO: ADD_LABEL reducer');
@@ -99,7 +93,7 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
       //   });
       //
       //   return {messages};
-      return state
+      return state;
 
     case REMOVE_LABEL:
       console.log('TODO: REMOVE_LABEL reducer');
@@ -116,7 +110,7 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
       //   });
       //
       //   return {messages};
-      return state
+      return state;
 
     case DELETE_MESSAGES:
       var remainingIds = state.ids.filter(id => !state.messagesById[id].selected);
@@ -134,6 +128,17 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
     default:
       return state
   }
+
+    // experimental
+    // function updateProperty(property) {
+    //   let newState = {...state, newMessagesById: {...state.messagesById}};
+    //
+    //   state.ids.filter(id => state.messagesById[id].selected).forEach(id => {
+    //     newState.messagesById[id] = {...state.messagesById[id], [property]: action.status};
+    //   });
+    //   return newState;
+    // }
+
 }
 
 export default combineReducers({
