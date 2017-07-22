@@ -46,15 +46,15 @@ class Toolbar extends Component {
 
           <button className={`btn btn-default ${disabled}`} onClick={() => this.props.updateReadStatus(false)}>Mark As Unread</button>
 
-          <select className='form-control label-select' disabled={`${disabled}`} onChange={(e) => this.props.addLabel(e.target.value)}>
-            <option value="">Add label</option>
+          <select className='form-control label-select' disabled={`${disabled}`} onChange={(e) => {this.props.addLabel(e.target.value); e.target.selectedIndex = 0}}>
+            <option>Add label</option>
             <option value="dev">dev</option>
             <option value="personal">personal</option>
             <option value="gschool">gschool</option>
           </select>
 
-          <select className='form-control label-select' disabled={`${disabled}`} onChange={(e) => this.props.removeLabel(e.target.value)}>
-            <option value="">Remove label</option>
+          <select className='form-control label-select' disabled={`${disabled}`} onChange={(e) => {this.props.removeLabel(e.target.value); e.target.selectedIndex = 0}}>
+            <option>Remove label</option>
             <option value="dev">dev</option>
             <option value="personal">personal</option>
             <option value="gschool">gschool</option>

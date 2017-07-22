@@ -79,38 +79,27 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
       // return updateProperty('read', action.status); // experimental
 
     case ADD_LABEL:
-      console.log('TODO: ADD_LABEL reducer');
-      // react code for reference
-      // this.setState((prevState) => {
-      //   let messages = prevState.messages.map((msg) => {
-      //     if (messageIds.includes(msg.id)) {
-      //         let labels = msg.labels.slice();
-      //         labels.push(label);
-      //         return {...msg, labels: labels}
-      //     } else {
-      //       return msg;
-      //     }
-      //   });
-      //
-      //   return {messages};
-      return state;
+      newState = {...state, messagesById: {...state.messagesById}};
+
+      action.messageIds.forEach(id => {
+        console.log('adding', action.label);
+        let labels = [ ...state.messagesById[id].labels, action.label ];
+        newState.messagesById[id] = {...state.messagesById[id], labels: labels};
+      });
+
+      return newState;
 
     case REMOVE_LABEL:
-      console.log('TODO: REMOVE_LABEL reducer');
-      // react code for reference
-      // this.setState((prevState) => {
-      //   let messages = prevState.messages.map((msg) => {
-      //     if (messageIds.includes(msg.id)) {
-      //         let labels = msg.labels.slice();
-      //         labels.splice(msg.labels.indexOf(label), 1);
-      //         return {...msg, labels: labels}
-      //     } else {
-      //       return msg;
-      //     }
-      //   });
-      //
-      //   return {messages};
-      return state;
+      newState = {...state, messagesById: {...state.messagesById}};
+
+      action.messageIds.forEach(id => {
+        console.log('deleting', action.label);
+        let labels = state.messagesById[id].labels.slice();
+        labels.splice(state.messagesById[id].labels.indexOf(action.label), 1);
+        newState.messagesById[id] = {...state.messagesById[id], labels: labels};
+      });
+
+      return newState;
 
     case DELETE_MESSAGES:
       var remainingIds = state.ids.filter(id => !state.messagesById[id].selected);

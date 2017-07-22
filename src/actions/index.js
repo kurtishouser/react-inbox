@@ -63,7 +63,6 @@ export function toggleStarred(id) {
 
 export const TOGGLE_SELECT_ALL ='TOGGLE_SELECT_ALL';
 export function toggleSelectAll(status) {
-  console.log(status);
   return {
     type: TOGGLE_SELECT_ALL,
     status
@@ -74,21 +73,21 @@ export const UPDATE_READ_STATUS = 'UPDATE_READ_STATUS';
 export function updateReadStatus(status) {
   return async (dispatch, getState, { Api }) => {
 
-      let body = {
-        'messageIds': getState().messages.ids.filter(id => (
-          getState().messages.messagesById[id].selected)),
-        'command': 'read',
-        'read': status,
-      }
+    let body = {
+      'messageIds': getState().messages.ids.filter(id => (
+        getState().messages.messagesById[id].selected)),
+      'command': 'read',
+      'read': status,
+    }
 
-      const response = await Api.patchRequest(body)
+    const response = await Api.patchRequest(body)
 
-      if (response === 200) {
-        return dispatch({
-          type: UPDATE_READ_STATUS,
-          status
-        });
-      }
+    if (response === 200) {
+      return dispatch({
+        type: UPDATE_READ_STATUS,
+        status
+      });
+    }
   }
 }
 
@@ -96,10 +95,14 @@ export const ADD_LABEL = 'ADD_LABEL';
 export function addLabel(label) {
   return async (dispatch, getState, { Api }) => {
 
+    let messageIds = getState().messages.ids.filter(id => (
+      getState().messages.messagesById[id].selected &&
+      !getState().messages.messagesById[id].labels.includes(label)));
+
+    // only make the API call and dispatch action when there are IDs
+    if (messageIds.length) {
       let body = {
-        'messageIds': getState().messages.ids.filter(id => (
-          getState().messages.messagesById[id].selected &&
-          !getState().messages.messagesById[id].labels.includes(label))),
+        'messageIds': messageIds,
         'command': 'addLabel',
         'label': label,
       }
@@ -109,9 +112,11 @@ export function addLabel(label) {
       if (response === 200) {
         return dispatch({
           type: ADD_LABEL,
-          label
+          label,
+          messageIds
         });
       }
+    }
   }
 }
 
@@ -119,10 +124,14 @@ export const REMOVE_LABEL = 'REMOVE_LABEL';
 export function removeLabel(label) {
   return async (dispatch, getState, { Api }) => {
 
+    let messageIds = getState().messages.ids.filter(id => (
+      getState().messages.messagesById[id].selected &&
+      getState().messages.messagesById[id].labels.includes(label)));
+
+    // only make the API call and dispatch action when there are IDs
+    if (messageIds.length) {
       let body = {
-        'messageIds': getState().messages.ids.filter(id => (
-          getState().messages.messagesById[id].selected &&
-          getState().messages.messagesById[id].labels.includes(label))),
+        'messageIds': messageIds,
         'command': 'removeLabel',
         'label': label,
       }
@@ -132,9 +141,11 @@ export function removeLabel(label) {
       if (response === 200) {
         return dispatch({
           type: REMOVE_LABEL,
-          label
+          label,
+          messageIds
         });
       }
+    }
   }
 }
 
