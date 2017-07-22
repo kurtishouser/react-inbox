@@ -31,8 +31,15 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
       };
 
     case SEND_MESSAGE:
-      console.log('TODO: SEND_MESSAGE reducer');
-      return state;
+      return {
+        ...state,
+        ids:
+          [...state.ids, action.response.id],
+        messagesById: {
+          ...state.messagesById,
+          [action.response.id]: action.response
+        }
+      }
 
     case TOGGLE_SELECTED:
      return {
@@ -67,7 +74,6 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
 
       return newState;
 
-
     case UPDATE_READ_STATUS:
       newState = {...state, messagesById: {...state.messagesById}};
 
@@ -76,7 +82,6 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
       });
 
       return newState;
-      // return updateProperty('read', action.status); // experimental
 
     case ADD_LABEL:
       newState = {...state, messagesById: {...state.messagesById}};
@@ -115,17 +120,6 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
     default:
       return state
   }
-
-    // experimental
-    // function updateProperty(property) {
-    //   let newState = {...state, newMessagesById: {...state.messagesById}};
-    //
-    //   state.ids.filter(id => state.messagesById[id].selected).forEach(id => {
-    //     newState.messagesById[id] = {...state.messagesById[id], [property]: action.status};
-    //   });
-    //   return newState;
-    // }
-
 }
 
 export default combineReducers({
