@@ -94,22 +94,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Toolbar);
-
-// react version
-
-// toggleComposeForm() {
-//   this.props.displayComposeForm();
-// }
-// addLabel(e) {
-//   let label = e.target.value;
-//   if (label !== '') this.props.addLabels(label, 'addLabel');
-// }
-//
-// removeLabel(e) {
-//   let label = e.target.value;
-//   if (label !== '') this.props.removeLabels(label);
-// }
-//
-// deleteSelected() {
-//   this.props.deleteMessages();
-// }

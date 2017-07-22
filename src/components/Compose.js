@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
-
+import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import { sendMessage } from '../actions';
+import { bindActionCreators } from 'redux';
 
 class ComposeForm extends Component {
 
@@ -53,4 +55,11 @@ class ComposeForm extends Component {
   }
 }
 
-export default ComposeForm;
+const mapDispatchToProps = dispatch => bindActionCreators({
+  sendMessage
+}, dispatch);
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(ComposeForm);

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import Compose from './components/Compose.js';
 import Message from './Message.js';
 import { connect } from 'react-redux';
 import { fetchMessages } from '../actions';
@@ -16,7 +15,6 @@ class Messages extends Component {
     return !loading ?
       (
         <div>
-          {/*{displayForm ? <Compose /> : null}*/}
           { messageIds.map((messageId) => <Message key={messageId} messageId={messageId} />) }
         </div>
       ) :

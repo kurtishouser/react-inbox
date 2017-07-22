@@ -1,4 +1,3 @@
-// import store from '../store';
 export const MESSAGES_PENDING = 'MESSAGES_PENDING';
 export const MESSAGES_RECEIVED = 'MESSAGES_RECEIVED';
 export function fetchMessages() {
@@ -13,9 +12,22 @@ export function fetchMessages() {
     });
 
     const json = await Api.fetchMessages();
+
     return dispatch({
       type: MESSAGES_RECEIVED,
       messages: json._embedded.messages
+    });
+  }
+}
+
+export const SEND_MESSAGE = 'SEND_MESSAGE';
+export function sendMessage(message) {
+  return async (dispatch, getState, { Api }) => {
+    let body = message;
+    const response = await Api.sendMessage(body);
+    return dispatch({
+      type: SEND_MESSAGE,
+      response
     });
   }
 }
@@ -38,7 +50,7 @@ export function toggleStarred(id) {
         'star': !getState().messages.messagesById[id].starred,
     }
 
-    const response = await Api.patchRequest(body)
+    const response = await Api.patchRequest(body);
 
     if (response === 200) {
       return dispatch({

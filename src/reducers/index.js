@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { MESSAGES_PENDING,
          MESSAGES_RECEIVED,
+         SEND_MESSAGE,
          TOGGLE_SELECTED,
          TOGGLE_STARRED,
          TOGGLE_SELECT_ALL,
@@ -25,6 +26,10 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
        }, {}),
        messagesLoading: false
       }
+
+    case SEND_MESSAGE:
+      console.log('TODO: SEND_MESSAGE reducer');
+      return state;
 
     case TOGGLE_SELECTED:
      return {
@@ -60,7 +65,6 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
 
       selectedIds.forEach(id => {
         var newMsg = {...state.messagesById[id], selected: action.status};
-        // let newMsg = Object.assign({}, state.messagesById[id], {read: action.status});
         newState.messagesById[id] = newMsg;
       })
 
@@ -75,7 +79,6 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
 
       selectedIds.forEach(id => {
         var newMsg = {...state.messagesById[id], read: action.status};
-        // let newMsg = Object.assign({}, state.messagesById[id], {read: action.status});
         newState.messagesById[id] = newMsg;
       })
 
@@ -83,12 +86,37 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
 
     case ADD_LABEL:
       console.log('TODO: ADD_LABEL reducer');
+      // react code for reference
+      // this.setState((prevState) => {
+      //   let messages = prevState.messages.map((msg) => {
+      //     if (messageIds.includes(msg.id)) {
+      //         let labels = msg.labels.slice();
+      //         labels.push(label);
+      //         return {...msg, labels: labels}
+      //     } else {
+      //       return msg;
+      //     }
+      //   });
+      //
+      //   return {messages};
       return state
 
     case REMOVE_LABEL:
       console.log('TODO: REMOVE_LABEL reducer');
+      // react code for reference
+      // this.setState((prevState) => {
+      //   let messages = prevState.messages.map((msg) => {
+      //     if (messageIds.includes(msg.id)) {
+      //         let labels = msg.labels.slice();
+      //         labels.splice(msg.labels.indexOf(label), 1);
+      //         return {...msg, labels: labels}
+      //     } else {
+      //       return msg;
+      //     }
+      //   });
+      //
+      //   return {messages};
       return state
-
 
     case DELETE_MESSAGES:
       var remainingIds = state.ids.filter(id => !state.messagesById[id].selected);
@@ -101,7 +129,7 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
         }
       })
 
-    return { ...state, ids: remainingIds, messagesById: newMsgs };
+      return { ...state, ids: remainingIds, messagesById: newMsgs };
 
     default:
       return state
