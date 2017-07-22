@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import Label from './Label.js';
 import { toggleSelected, toggleStarred } from '../actions';
 import { bindActionCreators } from 'redux';
 
@@ -27,7 +26,7 @@ class Message extends Component {
         </div>
         <div className="col-xs-11">
           {labels.map((label) => {
-            return <Label key={label} label={label} />
+            return <span key={label} className="label label-warning">{label}</span>
           })}
           <a href="/">
             {subject}
