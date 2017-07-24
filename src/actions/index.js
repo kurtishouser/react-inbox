@@ -39,16 +39,16 @@ export const FETCH_MESSAGE_BODY = 'FETCH_MESSAGE_BODY';
 export function fetchMessageBody(id) {
   return async (dispatch, getState, { Api }) => {
 
-  if (getState().messages.messagesById[id].body.length > 0) {
-    // update read status just in case
-    await Api.patchRequest({
-      'messageIds': [id],
-        'command': 'read',
-        'read': true,
-    });
-
-    return;
-  }
+  // if (getState().messages.messagesById[id].body.length > 0) {
+  //   // update read status just in case
+  //   await Api.patchRequest({
+  //     'messageIds': [id],
+  //       'command': 'read',
+  //       'read': true,
+  //   });
+  //
+  //   return;
+  // }
 
     const response = await Api.fetchMessageBody(id);
 
@@ -112,7 +112,7 @@ export function updateReadStatus(status) {
       getState().messages.messagesById[id].selected
       // && getState().messages.messagesById[id].read !== status
     ));
-
+    console.log(messageIds, status);
     // only make the API call and dispatch action when there are IDs
     if (messageIds.length) {
       let body = {

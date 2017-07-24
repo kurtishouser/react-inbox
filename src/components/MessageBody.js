@@ -5,9 +5,11 @@ import { fetchMessageBody } from '../actions';
 import { bindActionCreators } from 'redux';
 
 class MessageBody extends Component {
+  componentDidMount() {
+    this.props.fetchMessageBody(this.props.messageId);
+  }
 
   render() {
-    this.props.fetchMessageBody(this.props.messageId);
     return (
       <div className="row message-body">
         <div className="col-xs-11 col-xs-offset-1">
