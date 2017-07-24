@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { fetchMessages } from '../actions';
 import { bindActionCreators } from 'redux';
 
-class Messages extends Component {
+export class Messages extends Component {
 
   componentDidMount() {
     this.props.fetchMessages();
@@ -22,7 +22,7 @@ class Messages extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+export const mapStateToProps = (state, ownProps) => {
   const loading = state.messages.messagesLoading;
   const messageIds = state.messages.ids;
   return {

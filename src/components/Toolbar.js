@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { toggleSelectAll, updateReadStatus, addLabel, removeLabel, deleteMessages } from '../actions';
 import { bindActionCreators } from 'redux';
 
-class Toolbar extends Component {
+export class Toolbar extends Component {
 
 
   selectAllButton() {
@@ -72,7 +72,7 @@ class Toolbar extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+export const mapStateToProps = (state, ownProps) => {
   const messageIds = state.messages.ids;
   const messagesById = state.messages.messagesById;
   const selectedMessageCount = messageIds.filter(id => messagesById[id].selected).length;

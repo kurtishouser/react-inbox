@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { sendMessage } from '../actions';
 import { bindActionCreators } from 'redux';
 
-class ComposeForm extends Component {
+export class ComposeForm extends Component {
 
   constructor(props) {
     super(props);
@@ -60,7 +60,7 @@ class ComposeForm extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({
+export const mapDispatchToProps = dispatch => bindActionCreators({
   sendMessage
 }, dispatch);
 

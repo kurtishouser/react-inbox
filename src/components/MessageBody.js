@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { fetchMessageBody } from '../actions';
 import { bindActionCreators } from 'redux';
 
-class MessageBody extends Component {
+export class MessageBody extends Component {
 
   render() {
     this.props.fetchMessageBody(this.props.messageId);
@@ -18,7 +18,7 @@ class MessageBody extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+export const mapStateToProps = (state, ownProps) => {
   const messageId = ownProps.messageId;
   const messageBody = state.messages.messagesById[ownProps.messageId].body;
   return {
