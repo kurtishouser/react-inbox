@@ -23,12 +23,47 @@ export function fetchMessages() {
 export const SEND_MESSAGE = 'SEND_MESSAGE';
 export function sendMessage(message) {
   return async (dispatch, getState, { Api }) => {
+
     let body = message;
+
     const response = await Api.sendMessage(body);
+
     return dispatch({
       type: SEND_MESSAGE,
       response
     });
+  }
+}
+
+export const FETCH_MESSAGE_BODY = 'FETCH_MESSAGE_BODY';
+export function fetchMessageBody(id) {
+  return async (dispatch, getState, { Api }) => {
+
+  if (getState().messages.messagesById[id].body.length > 0) {
+    // update read status just in case
+    await Api.patchRequest({
+      'messageIds': [id],
+        'command': 'read',
+        'read': true,
+    });
+
+    return;
+  }
+
+    const response = await Api.fetchMessageBody(id);
+
+    // update read status
+    await Api.patchRequest({
+      'messageIds': [id],
+        'command': 'read',
+        'read': true,
+    });
+
+    return dispatch({
+      type: FETCH_MESSAGE_BODY,
+      id: response.id,
+      messageBody: response.body
+    })
   }
 }
 
@@ -74,19 +109,19 @@ export function updateReadStatus(status) {
   return async (dispatch, getState, { Api }) => {
 
     let messageIds = getState().messages.ids.filter(id => (
-      getState().messages.messagesById[id].selected &&
-      getState().messages.messagesById[id].read !== status));
+      getState().messages.messagesById[id].selected
+      // && getState().messages.messagesById[id].read !== status
+    ));
 
     // only make the API call and dispatch action when there are IDs
     if (messageIds.length) {
       let body = {
-        'messageIds': getState().messages.ids.filter(id => (
-          getState().messages.messagesById[id].selected)),
+        'messageIds': messageIds,
           'command': 'read',
           'read': status,
         }
 
-      const response = await Api.patchRequest(body)
+      const response = await Api.patchRequest(body);
 
       if (response === 200) {
         return dispatch({

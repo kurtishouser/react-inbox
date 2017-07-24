@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { toggleSelectAll, updateReadStatus, addLabel, removeLabel, deleteMessages } from '../actions';
 import { bindActionCreators } from 'redux';
 
 class Toolbar extends Component {
+
 
   selectAllButton() {
     let selectAllButtonIcon = '';
@@ -21,10 +23,11 @@ class Toolbar extends Component {
   }
 
   render() {
-    const { messageIds, selectedMessageCount, unreadMessageCount } = this.props;
+    const { path, messageIds, selectedMessageCount, unreadMessageCount } = this.props;
     const disabled = !selectedMessageCount ? 'disabled' : '';
     const disableSelectAll = messageIds.length === 0 ? 'disabled' : ''; // edge case when there are no messages at all
     const selectAllButtonIcon = this.selectAllButton();
+    const composeButtonLink = path !== '/compose' ? '/compose' : '/';
 
     return (
       <div className="row toolbar">
@@ -34,9 +37,9 @@ class Toolbar extends Component {
             unread {unreadMessageCount !== 1 ? 'messages' : 'message'}
           </p>
 
-          <a className="btn btn-danger" onClick={this.toggleComposeForm}>
+          <Link to={`${composeButtonLink}`} className="btn btn-danger">
             <i className="fa fa-plus"></i>
-          </a>
+          </Link>
 
           <button className={`btn btn-default ${disableSelectAll}`} onClick={() => this.props.toggleSelectAll((messageIds.length - selectedMessageCount > 0) ? true : false)}>
             <i className={`fa ${selectAllButtonIcon}`} />
@@ -69,13 +72,14 @@ class Toolbar extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   const messageIds = state.messages.ids;
   const messagesById = state.messages.messagesById;
   const selectedMessageCount = messageIds.filter(id => messagesById[id].selected).length;
   const unreadMessageCount = messageIds.filter(id => !messagesById[id].read).length;
-
+  const path = ownProps.match.path;
   return {
+    path,
     messageIds,
     selectedMessageCount,
     unreadMessageCount,

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { sendMessage } from '../actions';
 import { bindActionCreators } from 'redux';
 
@@ -8,6 +9,7 @@ class ComposeForm extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {messageSubmitted: false}
     this.submitForm = this.submitForm.bind(this);
   }
 
@@ -20,13 +22,14 @@ class ComposeForm extends Component {
     }
 
     if(submittedMessage.subject !== '' && submittedMessage.body !== '') {
+      this.setState({ messageSubmitted: true});
       this.props.sendMessage(submittedMessage);
     }
   }
 
   render() {
-
     return(
+      <div>
       <form className="form-horizontal well" onSubmit={this.submitForm}>
         <div className="form-group">
           <div className="col-sm-8 col-sm-offset-2">
@@ -51,6 +54,8 @@ class ComposeForm extends Component {
           </div>
         </div>
       </form>
+      {this.state.messageSubmitted && <Redirect to="/" />}
+      </div>
     )
   }
 }

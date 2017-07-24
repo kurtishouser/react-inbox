@@ -15,14 +15,14 @@ class Messages extends Component {
     return !loading ?
       (
         <div>
-          { messageIds.map((messageId) => <Message key={messageId} messageId={messageId} />) }
+          { messageIds.map((messageId) => <Message key={messageId} messageId={messageId} match={this.props.match}/>) }
         </div>
       ) :
       (<div>Loading...</div>)
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   const loading = state.messages.messagesLoading;
   const messageIds = state.messages.ids;
   return {

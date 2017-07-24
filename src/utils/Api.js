@@ -6,6 +6,11 @@ export default class Api {
     return fetch(BASE_PATH).then(response => response.json());
   }
 
+  static fetchMessageBody(id) {
+    return fetch(BASE_PATH + '/' + id).then(response => response.json());
+
+  }
+
   static sendMessage(message) {
       let options = {
         headers: {

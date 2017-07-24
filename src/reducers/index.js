@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { MESSAGES_PENDING,
          MESSAGES_RECEIVED,
          SEND_MESSAGE,
+         FETCH_MESSAGE_BODY,
          TOGGLE_SELECTED,
          TOGGLE_STARRED,
          TOGGLE_SELECT_ALL,
@@ -23,6 +24,7 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
       return {
         ids: action.messages.map(message => message.id),
         messagesById: action.messages.reduce((result, msg) => {
+          msg.body = '';
           msg.selected = false;
           result[msg.id] = msg;
           return result;
@@ -38,6 +40,19 @@ function messages(state = { ids:[], messagesById:{}, messagesLoading:false }, ac
         messagesById: {
           ...state.messagesById,
           [action.response.id]: action.response
+        }
+      }
+
+    case FETCH_MESSAGE_BODY:
+      return {
+        ...state,
+        messagesById: {
+          ...state.messagesById,
+          [action.id]: {
+            ...state.messagesById[action.id],
+            body: action.messageBody,
+            read: true
+          }
         }
       }
 
