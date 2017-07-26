@@ -5,8 +5,8 @@ import { bindActionCreators } from 'redux';
 
 class MessageBody extends Component {
   componentDidMount() {
-    this.props.fetchMessageBody(this.props.messageId);
     console.log('mounted!');
+    this.props.fetchMessageBody(this.props.messageId);
   }
 
   render() {
@@ -21,6 +21,7 @@ class MessageBody extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  console.log(ownProps);
   const messageId = ownProps.messageId;
   const messageBody = state.messages.messagesById[ownProps.messageId].body;
   return {

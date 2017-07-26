@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { toggleSelected, toggleStarred } from '../actions';
+import { toggleSelected, toggleStarred, fetchMessageBody } from '../actions';
 import { bindActionCreators } from 'redux';
 import MessageBody from './MessageBody.js';
 
@@ -17,7 +17,6 @@ class Message extends Component {
 
     return (
       <div>
-
         <div className={`row message ${isRead} ${isSelected}`}>
           <div className="col-xs-1">
             <div className="row">
@@ -37,7 +36,7 @@ class Message extends Component {
           </div>
         </div>
 
-        <Route path={`/message/${id}`} render={({match}) => <MessageBody match={match}/>} />
+        <Route path={`/messages/${id}`} render={() => <MessageBody messageId={id} />}/>
         {/* {displayMessageBody && <MessageBody messageId={id}/>} */}
     </div>
     )
@@ -53,7 +52,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   toggleSelected,
-  toggleStarred
+  toggleStarred,
+  fetchMessageBody
 }, dispatch);
 
 export default connect(
