@@ -5,7 +5,9 @@ import { toggleSelected, toggleStarred } from '../actions';
 import { bindActionCreators } from 'redux';
 import MessageBody from './MessageBody.js';
 
-class Message extends Component {
+import PropTypes from 'prop-types';
+
+export class Message extends Component {
 
   render() {
     const { id, selected, read, starred, subject, labels } = this.props.message;
@@ -44,8 +46,20 @@ class Message extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+Message.propTypes = {
+  message: PropTypes.object.isRequired
+};
+
+Message.defaultProps = {
+  message: {
+    labels: []
+  },
+  match: {params:{id:1}},
+};
+
+export const mapStateToProps = (state, ownProps) => {
   const message = state.messages.messagesById[ownProps.messageId];
+  console.log(message);
   return {
     message,
   }
