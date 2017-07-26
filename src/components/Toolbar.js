@@ -23,11 +23,12 @@ class Toolbar extends Component {
   }
 
   render() {
-    const { path, messageIds, selectedMessageCount, unreadMessageCount } = this.props;
+    // console.log(this.props.location);
+    const { messageIds, selectedMessageCount, unreadMessageCount } = this.props;
     const disabled = !selectedMessageCount ? 'disabled' : '';
     const disableSelectAll = messageIds.length === 0 ? 'disabled' : ''; // edge case when there are no messages at all
     const selectAllButtonIcon = this.selectAllButton();
-    const composeButtonLink = path !== '/compose' ? '/compose' : '/';
+    const composeButtonLink = this.props.location.pathname !== '/compose' ? '/compose' : '/';
 
     return (
       <div className="row toolbar">
@@ -77,10 +78,9 @@ const mapStateToProps = (state, ownProps) => {
   const messagesById = state.messages.messagesById;
   const selectedMessageCount = messageIds.filter(id => messagesById[id].selected).length;
   const unreadMessageCount = messageIds.filter(id => !messagesById[id].read).length;
-  const path = ownProps.match.path;
   return {
-    path,
     messageIds,
+    // messagesById,
     selectedMessageCount,
     unreadMessageCount,
   }

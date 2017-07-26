@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Link } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { toggleSelected, toggleStarred } from '../actions';
 import { bindActionCreators } from 'redux';
@@ -13,7 +13,7 @@ class Message extends Component {
     const isSelected = selected ? 'selected' : '';
     const isChecked = selected ? true : false;
     const isStarred = starred ? 'fa-star' : 'fa-star-o';
-    const displayMessageBody = parseInt(this.props.match.params.id, 10) === id;
+    // const displayMessageBody = parseInt(this.props.match.params.id, 10) === id;
 
     return (
       <div>
@@ -36,9 +36,9 @@ class Message extends Component {
             <Link to={`/messages/${id}`}>{subject}</Link>
           </div>
         </div>
-        {displayMessageBody &&
-          <MessageBody messageId={id}/>
-        }
+
+        <Route path={`/message/${id}`} render={({match}) => <MessageBody match={match}/>} />
+        {/* {displayMessageBody && <MessageBody messageId={id}/>} */}
     </div>
     )
   }

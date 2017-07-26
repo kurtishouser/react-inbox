@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import Message from './Message.js';
 import { connect } from 'react-redux';
 import { fetchMessageBody } from '../actions';
 import { bindActionCreators } from 'redux';
@@ -7,6 +6,7 @@ import { bindActionCreators } from 'redux';
 class MessageBody extends Component {
   componentDidMount() {
     this.props.fetchMessageBody(this.props.messageId);
+    console.log('mounted!');
   }
 
   render() {

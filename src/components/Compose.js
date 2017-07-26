@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import { sendMessage } from '../actions';
 import { bindActionCreators } from 'redux';
 
@@ -9,7 +8,7 @@ class ComposeForm extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {messageSubmitted: false}
+    // this.state = {messageSubmitted: false}
     this.submitForm = this.submitForm.bind(this);
   }
 
@@ -24,6 +23,7 @@ class ComposeForm extends Component {
     if(submittedMessage.subject !== '' && submittedMessage.body !== '') {
       this.setState({ messageSubmitted: true});
       this.props.sendMessage(submittedMessage);
+      this.props.history.push('/');
     }
   }
 
@@ -54,9 +54,16 @@ class ComposeForm extends Component {
           </div>
         </div>
       </form>
-      {this.state.messageSubmitted && <Redirect to="/" />}
+      {/* {this.state.messageSubmitted && <Redirect to="/" />} */}
       </div>
     )
+  }
+}
+
+const mapStateToProps = (state, ownProps) => {
+  const stuff = this.ownProps
+  return {
+    stuff
   }
 }
 
@@ -65,6 +72,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(ComposeForm);
